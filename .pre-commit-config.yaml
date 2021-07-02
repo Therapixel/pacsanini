@@ -1,0 +1,40 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: check-json
+    -   id: check-merge-conflict
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: https://github.com/myint/autoflake
+    rev: v1.4
+    hooks:
+    -   id: autoflake
+        args:
+          - --exclude=__init__.py
+          - --in-place
+          - --recursive
+          - --remove-all-unused-imports
+-   repo: https://github.com/psf/black
+    rev: 19.3b0
+    hooks:
+    -   id: black
+-   repo: https://github.com/pycqa/isort
+    rev: 5.8.0
+    hooks:
+      - id: isort
+        name: isort (python)
+-   repo: local
+    hooks:
+      - id: export-requirements
+        name: export requirements
+        entry: scripts/export_requirements.sh --auto
+        language: script
+        files: (pyproject.toml|poetry.lock|requirements*.txt)
+-   repo: local
+    hooks:
+      - id: copyright-checker
+        name: copyright checker
+        entry: scripts/check_copyright.py
+        language: python
+        files: \.(py|sh)$

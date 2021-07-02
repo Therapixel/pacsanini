@@ -1,0 +1,12 @@
+* text=auto
+
+*.py text
+*.sh text
+*.csv text
+*.json text
+*.md text
+*.toml text
+*.yaml text
+*.yml text
+
+*.dcm binary

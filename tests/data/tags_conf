@@ -1,0 +1,24 @@
+{
+    "tags": [
+        {
+            "tag_name": "PatientName",
+            "callback": "str"
+        },
+        {
+            "tag_name": "StudyDate",
+            "tag_alias": "study_date",
+            "callback": "pacsanini.convert:str2datetime"
+        },
+        {
+            "tag_name": "Laterality",
+            "default_val": "U",
+            "callback": "str"
+        },
+        {
+            "tag_name": "StudyInstanceUID"
+        },
+        {
+            "tag_name": "SOPInstanceUID"
+        }
+    ]
+}

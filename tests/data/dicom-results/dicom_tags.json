@@ -1,0 +1,102 @@
+{
+  "dicom_tags": [
+    {
+      "PatientName": "Nanto",
+      "study_date": "2015-12-29 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.251902960533573151000097783431958561263",
+      "SOPInstanceUID": "2.25.98665557379884205730193271628654420727"
+    },
+    {
+      "PatientName": "Nanto",
+      "study_date": "2015-12-29 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.251902960533573151000097783431958561263",
+      "SOPInstanceUID": "2.25.86534133580352607818980918487321133175"
+    },
+    {
+      "PatientName": "Nanto",
+      "study_date": "2015-12-29 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.251902960533573151000097783431958561263",
+      "SOPInstanceUID": "2.25.49362298622214247141657803556594225513"
+    },
+    {
+      "PatientName": "Nanto",
+      "study_date": "2015-12-29 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.251902960533573151000097783431958561263",
+      "SOPInstanceUID": "2.25.92160484795951167107308460609538135297"
+    },
+    {
+      "PatientName": "Nanto",
+      "study_date": "2015-12-29 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.251902960533573151000097783431958561263",
+      "SOPInstanceUID": "2.25.268816703503705487066228727085868556313"
+    },
+    {
+      "PatientName": "Rhond",
+      "study_date": "2016-06-22 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.260567545002523750617782240020157810303",
+      "SOPInstanceUID": "2.25.82639833635311086554610658062978685542"
+    },
+    {
+      "PatientName": "Rhond",
+      "study_date": "2016-06-22 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.260567545002523750617782240020157810303",
+      "SOPInstanceUID": "2.25.92120748953003879972905329805064032899"
+    },
+    {
+      "PatientName": "Rhond",
+      "study_date": "2016-06-22 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.260567545002523750617782240020157810303",
+      "SOPInstanceUID": "2.25.247397004304162649800624176494983911294"
+    },
+    {
+      "PatientName": "Rhond",
+      "study_date": "2016-06-22 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.260567545002523750617782240020157810303",
+      "SOPInstanceUID": "2.25.46875555697516801314689966570768618282"
+    },
+    {
+      "PatientName": "Rhond",
+      "study_date": "2016-06-22 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.260567545002523750617782240020157810303",
+      "SOPInstanceUID": "2.25.121149227697321658020005644331024013715"
+    },
+    {
+      "PatientName": "Krist",
+      "study_date": "2010-12-01 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.303369956536363636726878688997351853397",
+      "SOPInstanceUID": "2.25.300921855896581517216866422311391694063"
+    },
+    {
+      "PatientName": "Krist",
+      "study_date": "2010-12-01 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.303369956536363636726878688997351853397",
+      "SOPInstanceUID": "2.25.111003268348435445733862839049986253983"
+    },
+    {
+      "PatientName": "Krist",
+      "study_date": "2010-12-01 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.303369956536363636726878688997351853397",
+      "SOPInstanceUID": "2.25.220729754235184508538619000780286836385"
+    },
+    {
+      "PatientName": "Krist",
+      "study_date": "2010-12-01 00:00:00",
+      "Laterality": "",
+      "StudyInstanceUID": "2.25.303369956536363636726878688997351853397",
+      "SOPInstanceUID": "2.25.161400284512958035138148913963887621945"
+    }
+  ]
+}

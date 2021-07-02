@@ -1,0 +1,70 @@
+site_name: pacsanini
+
+markdown_extensions:
+    - toc:
+        permalink: "#"
+    - mkdocs-click
+    - attr_list
+    - pymdownx.tabbed
+    - pymdownx.snippets
+    - pymdownx.highlight
+    - pymdownx.superfences
+    - pymdownx.inlinehilite
+    - pymdownx.emoji:
+        emoji_index: !!python/name:materialx.emoji.twemoji
+        emoji_generator: !!python/name:materialx.emoji.to_svg
+
+nav:
+  - Home: 'index.md'
+  - 'User Guide':
+    - Overview: 'user_guide/index.md'
+    - Installation: 'user_guide/installation.md'
+    - Configuration: 'user_guide/configuration.md'
+    - Collection: 'user_guide/collection.md'
+  - 'API Reference':
+    - Overview: 'api_reference/index.md'
+    - cli: 'api_reference/cli.md'
+    - config: 'api_reference/config.md'
+    - convert: 'api_reference/convert.md'
+    - errors: 'api_reference/errors.md'
+    - io: 'api_reference/io.md'
+    - models: 'api_reference/models.md'
+    - net: 'api_reference/net.md'
+    - parse: 'api_reference/parse.md'
+    - pipeline: 'api_reference/pipeline.md'
+    - utils: 'api_reference/utils.md'
+  - 'CLI Reference': 'cli_reference/index.md'
+  - About:
+    - Contributing: 'about/contributing.md'
+    - License: 'about/license.md'
+
+plugins:
+- search:
+    lang: en
+- mkdocstrings:
+    default_handler: python
+    handlers:
+      python:
+        rendering:
+          show_source: true
+          show_root_heading: true
+        selection:
+          docstring_style: numpy
+        setup_commands:
+            - import sys
+            - sys.path.append("./src")
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: teal
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: lime
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode

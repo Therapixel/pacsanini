@@ -1,0 +1,38 @@
+net:
+  called_node:
+    aetitle: dcmpy
+    ip: localhost
+    port: 11112
+  dest_node:
+    aetitle: dicomserver
+    ip: www.dicomserver.co.uk
+    port: 104
+  local_node:
+    aetitle: dcmpy
+    ip: localhost
+    port: 104
+search:
+  end_date: "20210606"
+  modality: ''
+  query_level: PATIENT
+  search_fields:
+  - PatientName
+  - StudyInstanceUID
+  start_date: "20210606"
+storage:
+  resources: "resources.csv"
+  resources_meta: "resources_meta.csv"
+  directory: ""
+  sort_by: PATIENT
+tags:
+- callback: null
+  default_val: null
+  tag_alias: image_uid
+  tag_name:
+  - SOPInstanceUID
+- callback: null
+  default_val: null
+  tag_alias: laterality
+  tag_name:
+  - Laterality
+  - ImageLaterality
