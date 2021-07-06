@@ -1,0 +1,8 @@
+mkdocs==1.1.2
+mkdocs-material==7.1.5
+mkdocs-material-extensions==1.0.1
+mkdocstrings==0.15.1
+mkdocs-autorefs==0.2.1
+mkdocs-click==0.4.0
+pytkdocs==0.11.1
+docstring-parser==0.7.3
