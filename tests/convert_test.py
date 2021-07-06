@@ -68,7 +68,25 @@ def test_str2timedelta():
     time4_result = convert.str2timedelta(time4)
     assert time4_result == time4_expected
 
-    invalid_times = ["045812000123", "021", "0", "0458120001231213"]
+    time5 = "045812.9"
+    time5_expected = timedelta(hours=4, minutes=58, seconds=12, microseconds=900000)
+    time5_result = convert.str2timedelta(time5)
+    assert time5_result == time5_expected
+
+    time5 = "045812.0987"
+    time5_expected = timedelta(hours=4, minutes=58, seconds=12, microseconds=98700)
+    time5_result = convert.str2timedelta(time5)
+    assert time5_result == time5_expected
+
+    invalid_times = [
+        "045812000123",
+        "021",
+        "0",
+        "0458120001231213",
+        "012345.",
+        "01.123",
+        "0123.45",
+    ]
     for time_str in invalid_times:
         with pytest.raises(ValueError):
             convert.str2timedelta(time_str)

@@ -6,6 +6,7 @@
 to convert raw DICOM data to DICOM files.
 """
 import json
+import re
 
 from datetime import datetime, timedelta
 from typing import Dict, Union
@@ -74,18 +75,20 @@ def str2timedelta(dcm_time: str) -> timedelta:
         A ValueError is raised if the dcm_time parameter
         does not conform to the DICOM time format.
     """
-    invalid_len = len(dcm_time) < 2 or len(dcm_time) > 13
-    invalid_fmt = len(dcm_time) != 13 and (len(dcm_time) % 2 != 0 or len(dcm_time) > 6)
-    if invalid_len or invalid_fmt:
+    m = re.fullmatch(
+        r"(\d\d)(?:(\d\d)(?:(\d\d)(?:\.(\d{1,6}))?)?)?", dcm_time, flags=re.ASCII
+    )
+
+    if m is None:
         raise ValueError(f"Invalid DICOM time string: '{dcm_time}'")
 
-    time_vals = {"hours": int(dcm_time[:2])}
-    if len(dcm_time) > 2:
-        time_vals["minutes"] = int(dcm_time[2:4])
-        if len(dcm_time) > 4:
-            time_vals["seconds"] = int(dcm_time[4:6])
-            if len(dcm_time) > 6:
-                time_vals["microseconds"] = int(dcm_time[7:])
+    time_vals = {"hours": int(m.group(1))}
+    if m.group(2) is not None:
+        time_vals["minutes"] = int(m.group(2))
+        if m.group(3) is not None:
+            time_vals["seconds"] = int(m.group(3))
+            if m.group(4) is not None:
+                time_vals["microseconds"] = int(m.group(4).ljust(6, "0"))
 
     return timedelta(**time_vals)
 
