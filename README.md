@@ -12,6 +12,39 @@ The two main pain points for this are:
 * acquiring data from a PACS
 * extracting metadata from DICOM files in research-ready formats (eg: csv)
 
+## Installation and Deployment
+
+`pacsanini` can be installed using in one of the following ways:
+
+### poetry
+
+This is the preferred way to install the project's dependencies. This way also
+allows you to install dev dependencies. See [here](https://python-poetry.org/docs/#installation)
+on how to install poetry.
+
+```bash
+poetry install --no-root --no-dev
+# or, to install the project and its development dependencies:
+poetry install --no-root
+```
+
+### pip
+
+```bash
+git clone https://github.com/Therapixel/pacsanini.git
+cd pacsanini
+pip install .
+```
+
+### docker
+
+A docker image can be built locally to run `pacsanini` within an isolated environment.
+
+```bash
+docker image build -t latest .
+docker run pacsanini --help
+```
+
 ## Roadmap
 
 ### Data Collection

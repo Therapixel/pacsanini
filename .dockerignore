@@ -1,0 +1,32 @@
+# Git stuff
+.git/
+.gitignore
+.gitattributes
+
+# Environment/configurtion files
+.vscode/
+.DS_Store
+.env
+env
+
+# Virtual environment files
+venv/
+.venv/
+.tox
+
+# Distribution/build files
+build/
+dist/
+site/
+
+# Python files
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+*.spec
+*.ipynb
+
+# Testing files
+.coverage
+htmlcov/
+.pytest_cache/
