@@ -20,6 +20,9 @@ from pacsanini.net.c_move import move_patients, move_studies
 from pacsanini.utils import read_resources
 
 
+# pylint: disable=no-member
+
+
 class FindDICOMResources(luigi.Task):
     """This defines the task that should be performed to find the
     DICOM resources that are stored in the PACS.

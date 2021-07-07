@@ -11,7 +11,7 @@ from pydicom import dcmread
 from pydicom.dataset import Dataset
 from pynetdicom import AE, StoragePresentationContexts, evt
 from pynetdicom.events import Event
-from pynetdicom.sop_class import (
+from pynetdicom.sop_class import (  # pylint: disable=no-name-in-module
     PatientRootQueryRetrieveInformationModelMove,
     StudyRootQueryRetrieveInformationModelMove,
 )
@@ -21,16 +21,9 @@ from pacsanini.net import c_move
 
 
 @pytest.fixture(scope="module")
-def dcm(data_dir: str):
+def dcm(dicom_path: str):
     """Return a test DICOM file."""
-    dcm_path = os.path.join(
-        data_dir,
-        "dicom-files",
-        "2.25.251902960533573151000097783431958561263",
-        "2.25.171393445333099000331008511307816546527",
-        "2.25.98665557379884205730193271628654420727.dcm",
-    )
-    return dcmread(dcm_path, stop_before_pixels=True)
+    return dcmread(dicom_path, stop_before_pixels=True)
 
 
 @pytest.mark.net
@@ -38,7 +31,7 @@ def dcm(data_dir: str):
 class TestCMove:
     """Test that emitting C-MOVE requests functions correctly."""
 
-    def setup(self):
+    def setup(self):  # pylint: disable=attribute-defined-outside-init
         """Setup the server."""
         self.scp: ThreadedAssociationServer = None
         self.testing_node = {"aetitle": "pacsanini_testing", "ip": "", "port": 11114}

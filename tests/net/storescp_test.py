@@ -2,6 +2,7 @@
 # All rights reserved.
 # This file is subject to the terms and conditions described in the
 # LICENSE file distributed in this package.
+"""Test that the storescp class functions correctly."""
 import os
 
 import pytest
@@ -14,23 +15,16 @@ from pacsanini.net.storescp import StoreSCPServer, run_server
 
 
 @pytest.fixture(scope="module")
-def dcm(data_dir: str):
+def dcm(dicom_path: str):
     """Return a test DICOM file."""
-    dcm_path = os.path.join(
-        data_dir,
-        "dicom-files",
-        "2.25.251902960533573151000097783431958561263",
-        "2.25.171393445333099000331008511307816546527",
-        "2.25.98665557379884205730193271628654420727.dcm",
-    )
-    return dcmread(dcm_path, stop_before_pixels=True)
+    return dcmread(dicom_path, stop_before_pixels=True)
 
 
 @pytest.mark.net
 class TestStoreSCPServer:
     """Test the overall storescp server module."""
 
-    def setup(self):
+    def setup(self):  # pylint: disable=attribute-defined-outside-init
         """Run prior to every test."""
         self.server: StoreSCPServer = None
 

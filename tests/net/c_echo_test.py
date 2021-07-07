@@ -6,7 +6,9 @@
 import pytest
 
 from pynetdicom import AE, ALL_TRANSFER_SYNTAXES, evt
-from pynetdicom.sop_class import VerificationSOPClass
+from pynetdicom.sop_class import (  # pylint: disable=no-name-in-module
+    VerificationSOPClass,
+)
 
 from pacsanini.net.c_echo import echo
 
