@@ -10,7 +10,7 @@ import pytest
 from pydicom import Dataset, dcmread
 from pynetdicom import AE, ALL_TRANSFER_SYNTAXES, AllStoragePresentationContexts, evt
 from pynetdicom.events import Event
-from pynetdicom.sop_class import (  # PatientRootQueryRetrieveInformationModelGet,; StudyRootQueryRetrieveInformationModelGet,
+from pynetdicom.sop_class import (  # pylint: disable=no-name-in-module
     PatientRootQueryRetrieveInformationModelFind,
     PatientRootQueryRetrieveInformationModelMove,
     StudyRootQueryRetrieveInformationModelFind,

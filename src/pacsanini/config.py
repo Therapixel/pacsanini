@@ -66,7 +66,7 @@ class MoveConfig(BaseModel):
         start_time = values.get("start_time", None)
         end_time = values.get("end_time", None)
         if (start_time and not end_time) or (end_time and not start_time):
-            msg = f"Both start_time and end_time parameters must be set or both must be unset."
+            msg = "Both start_time and end_time parameters must be set or both must be unset."
             raise ValueError(msg)
 
         def validate_format(val):

@@ -2,6 +2,7 @@
 # All rights reserved.
 # This file is subject to the terms and conditions described in the
 # LICENSE file distributed in this package.
+"""Expose the complete collection pipeline from the CLI."""
 import click
 
 from pacsanini.pipeline import run_pacsanini_pipeline
