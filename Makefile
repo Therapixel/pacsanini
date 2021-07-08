@@ -63,8 +63,8 @@ install:  ## Install the project as a python package in your environment.
 lint:  ## Apply linting and formatting to the project's code.
 	pylint src/pacsanini tests
 
-setup:  ## Setup the development environment.
-	bash scripts/setup_env.sh
+setup:  ## Setup the development environment (requires poetry).
+	poetry install --no-root
 
 test: clean-pyc clean-tests  ## Run tests using pytest.
 	pytest

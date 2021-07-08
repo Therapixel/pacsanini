@@ -32,24 +32,24 @@ this with a [poetry] inside a [virtual environment].
 ## Installing for Development
 
 First you'll need to fork and clone the repository. Once you have a local
-copy, run the following command. It is ecommended that you do this with [poetry]
-within a [virtual environment]. To help you set up your environment the following
+copy, run the following command. You should do this with [poetry]
+within a [virtual environment] and a python version greater or equal to 3.7. To help you set up your environment the following
 command remains at your disposal:
-
-```bash
-bash scripts/setup_env.sh
-```
-
-or
 
 ```bash
 make setup
 ```
 
-This will create a virtual environment using the a python version greater or
-equal to 3.6 and install the project's core and development dependencies in
-it. In addition, it will initialize pre-commit hooks, which are required for
-development.
+<details>
+  <summary>How to install poetry</summary>
+
+  Installing poetry can be done using the following command. For more details,
+  see the official documentation [here](https://python-poetry.org/docs/#installation)
+  ```bash
+  curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+  ```
+
+</details>
 
 ## Running the tests
 

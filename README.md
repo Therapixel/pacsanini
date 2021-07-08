@@ -14,26 +14,46 @@ The two main pain points for this are:
 
 ## Installation and Deployment
 
-`pacsanini` can be installed using in one of the following ways:
+`pacsanini` is only available for python versions 3.7+. The dependency/package management tool used by this project is `poetry`. This is what you need for development.
 
-### poetry
+<details>
+  <summary>How to install poetry</summary>
 
-This is the preferred way to install the project's dependencies. This way also
-allows you to install dev dependencies. See [here](https://python-poetry.org/docs/#installation)
-on how to install poetry.
+  Installing poetry can be done using the following command. For more details,
+  see the official documentation [here](https://python-poetry.org/docs/#installation)
+  ```bash
+  curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+  ```
+
+</details>
+
+## pacsanini as a package
+
+The following methods are available to install `pacsanini` as a package:
+
+* pip:
 
 ```bash
-poetry install --no-root --no-dev
-# or, to install the project and its development dependencies:
-poetry install --no-root
+pip install git+https://github.com/Therapixel/pacsanini.git
 ```
 
-### pip
+* poetry:
+
+```bash
+poetry add git+https://github.com/Therapixel/pacsanini.git
+```
+
+## pacsanini for development
+
+`poetry` is the only supported build tool for installing `pacsanini` in a development context.
+See the previous section on how to install `poetry`.
 
 ```bash
 git clone https://github.com/Therapixel/pacsanini.git
 cd pacsanini
-pip install .
+poetry install --no-root --no-dev
+# or, to install the project and its development dependencies:
+poetry install --no-root
 ```
 
 ### docker
