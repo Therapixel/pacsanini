@@ -65,8 +65,8 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.7.1"
 pydicom = "^2.1.2"
-pydantic = "^1.7.3"
-PyYAML = "^5.3.1"
+pydantic = ">=1.7.4"
+PyYAML = ">=5.4"
 click = "^7.1.2"
 pandas = "^1.2.4"
 pynetdicom = "^1.5.7"
