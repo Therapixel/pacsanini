@@ -1,4 +1,6 @@
 site_name: pacsanini
+repo_url: https://github.com/Therapixel/pacsanini
+repo_name: 'GitHub'
 
 markdown_extensions:
     - toc:
