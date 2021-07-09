@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/pacsanini/badge/?version=latest)](https://pacsanini.readthedocs.io/en/latest/?badge=latest)
+
 # pacsanini
 
 `pacsanini` 🎻 is a package designed to help with the collection of DICOM files and the extraction of DICOM tags (metadata) for structuring purposes.
@@ -11,6 +13,10 @@ The two main pain points for this are:
 
 * acquiring data from a PACS
 * extracting metadata from DICOM files in research-ready formats (eg: csv)
+
+## Documentation
+
+Check out the complete documentation on [readthedocs](https://pacsanini.readthedocs.io/en/latest/).
 
 ## Installation and Deployment
 
