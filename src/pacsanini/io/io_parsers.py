@@ -9,9 +9,8 @@ import csv
 import json
 
 from datetime import datetime
-from io import TextIOWrapper
 from os import PathLike
-from typing import Union
+from typing import TextIO, Union
 
 from pacsanini.io.base_parser import parse_dir
 from pacsanini.parse import DicomTagGroup
@@ -24,7 +23,7 @@ def _write_results(result: dict, reader: csv.DictWriter):
 def parse_dir2csv(
     src: Union[str, PathLike],
     parser: DicomTagGroup,
-    dest: Union[str, PathLike, TextIOWrapper],
+    dest: Union[str, PathLike, TextIO],
     nb_threads: int = 1,
     include_path: bool = False,
     mode: str = "w",
@@ -39,7 +38,7 @@ def parse_dir2csv(
     parser : DicomTagGroup
         The DicomTagGroup instance specifying which DICOM
         tags to parse and how.
-    dest : Union[str, PathLike, TextIOWrapper]
+    dest : Union[str, PathLike, TextIO]
         The destination path to write the results to.
     nb_threads : int
         The number of threads to use when parsing DICOM
@@ -98,7 +97,7 @@ def _json_serializer(value):
 def parse_dir2json(
     src: Union[str, PathLike],
     parser: DicomTagGroup,
-    dest: Union[str, PathLike, TextIOWrapper],
+    dest: Union[str, PathLike, TextIO],
     nb_threads: int = 1,
     include_path: bool = False,
     mode: str = "w",
@@ -113,7 +112,7 @@ def parse_dir2json(
     parser : DicomTagGroup
         The DicomTagGroup instance specifying which DICOM
         tags to parse and how.
-    dest : Union[str, PathLike, TextIOWrapper]
+    dest : Union[str, PathLike, TextIO]
         The destination path to write the results to.
     nb_threads : int
         The number of threads to use when parsing DICOM
@@ -129,7 +128,7 @@ def parse_dir2json(
     if include_path:
         fieldnames.append("dicom_path")
 
-    results = []
+    results: list = []
     parse_dir(
         src,
         parser,

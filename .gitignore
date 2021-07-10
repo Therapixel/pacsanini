@@ -25,3 +25,6 @@ __pycache__/
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Typing files
+.mypy_cache/

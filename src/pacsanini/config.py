@@ -9,7 +9,7 @@ import json
 import os
 
 from datetime import datetime, time, timedelta
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import yaml
 
@@ -194,7 +194,7 @@ class FindConfig(BaseModel):
     """
 
     query_level: QueryLevel = QueryLevel.STUDY
-    search_fields: List[str] = ()
+    search_fields: List[str] = []
     start_date: datetime
     end_date: Optional[datetime] = None
     modality: Optional[str] = ""
@@ -295,7 +295,7 @@ class PacsaniniConfig(BaseModel):
         """Returns True if the tags config is not None -False otherwise."""
         return self.tags is not None
 
-    def get_tags(self) -> DicomTagGroup:
+    def get_tags(self) -> Union[DicomTagGroup, None]:
         """Return the DICOMTagGroup instance associated
         with the current configuration.
         """

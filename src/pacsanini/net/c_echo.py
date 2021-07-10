@@ -53,8 +53,8 @@ def echo(
     association = ae.associate(called_node.ip, called_node.port)
     status = -1
     if association.is_established:
-        status = association.send_c_echo()
-        status = status.Status
+        status_ds = association.send_c_echo()
+        status = status_ds.Status
         association.release()
 
     return status

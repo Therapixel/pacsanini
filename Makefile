@@ -39,7 +39,7 @@ clean-docs:  ## Clean up previously built docs.
 	rm -rf site/
 
 clean-tests:  ## Clean all test result and caching files.
-	rm -rf .coverage .pytest_cache/ htmlcov/ .tox/
+	rm -rf .coverage .pytest_cache/ htmlcov/ .tox/ .mypy_cache/
 
 clean-pyc:  ## Clean all __pycache__ and .pyc files.
 	rm -rf __pycache__/ ; \
@@ -62,6 +62,7 @@ install:  ## Install the project as a python package in your environment.
 
 lint:  ## Apply linting and formatting to the project's code.
 	pylint src/pacsanini tests
+	mypy
 
 setup:  ## Setup the development environment (requires poetry).
 	poetry install --no-root
