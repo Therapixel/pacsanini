@@ -3,6 +3,9 @@
 .gitignore
 .gitattributes
 
+# GitHub stuff
+.github/
+
 # Environment/configurtion files
 .vscode/
 .DS_Store

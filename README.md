@@ -4,8 +4,6 @@
 
 `pacsanini` 🎻 is a package designed to help with the collection of DICOM files and the extraction of DICOM tags (metadata) for structuring purposes.
 
-## Overview
-
 `pacsanini`'s functionalities come out of a desire to facilitate research in
 medical imagery by easing the process of data collection and structuring.
 
@@ -18,20 +16,18 @@ The two main pain points for this are:
 
 Check out the complete documentation on [readthedocs](https://pacsanini.readthedocs.io/en/latest/).
 
-## Installation and Deployment
+## Contributing and Code of Conduct
 
-`pacsanini` is only available for python versions 3.7+. The dependency/package management tool used by this project is `poetry`. This is what you need for development.
+All contributions to improve `pacsanini` are welcome. For more information on how you can contribute,
+please read the [Contributing](CONTRIBUTING.md) document. Do make sure that you are familiar with our
+[Code of Conduct](CODE_OF_CONDUCT.md) as well.
 
-<details>
-  <summary>How to install poetry</summary>
 
-  Installing poetry can be done using the following command. For more details,
-  see the official documentation [here](https://python-poetry.org/docs/#installation)
-  ```bash
-  curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-  ```
+## Installation
 
-</details>
+`pacsanini` can be installed using our
+
+
 
 ## pacsanini as a package
 

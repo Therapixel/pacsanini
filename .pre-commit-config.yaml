@@ -27,10 +27,3 @@ repos:
     hooks:
       - id: isort
         name: isort (python)
--   repo: local
-    hooks:
-      - id: copyright-checker
-        name: copyright checker
-        entry: scripts/check_copyright.py
-        language: python
-        files: \.(py|sh)$
