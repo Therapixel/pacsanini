@@ -65,6 +65,7 @@ lint:  ## Apply linting and formatting to the project's code.
 
 setup:  ## Setup the development environment (requires poetry).
 	poetry install --no-root
+	pre-commit install
 
 test: clean-pyc clean-tests  ## Run tests using pytest.
 	pytest
