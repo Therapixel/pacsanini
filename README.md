@@ -1,5 +1,9 @@
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pacsanini)
+![PyPI](https://img.shields.io/pypi/v/pacsanini)
+![PyPI - Status](https://img.shields.io/pypi/status/pacsanini)
 [![Documentation Status](https://readthedocs.org/projects/pacsanini/badge/?version=latest)](https://pacsanini.readthedocs.io/en/latest/?badge=latest)
-![GitHub](https://img.shields.io/github/license/Therapixel/pacsanini) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Therapixel/pacsanini)
+![GitHub](https://img.shields.io/github/license/Therapixel/pacsanini) 
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Therapixel/pacsanini)
 
 # pacsanini
 
@@ -29,7 +33,16 @@ All contributions to improve `pacsanini` are welcome and valued. For more inform
 please read the [Contributing](CONTRIBUTING.md) document and make sure that you are familiar with our
 [Code of Conduct](CODE_OF_CONDUCT.md).
 
+You are also more than welcome to open a discussion on our [GitHub discussions](https://github.com/Therapixel/pacsanini/discussions) page.
+
 ## Installation
+
+To install a particular release version, check out the available versions of `pacsanini` on [PyPI](https://pypi.org/project/pacsanini/)
+or simply run the following command to obtain the latest release:
+
+```bash
+pip install pacsanini
+```
 
 To obtain the cutting edge version of `pacsanini`, you can use `pip` or `poetry` in the following way:
 
