@@ -10,7 +10,7 @@ Contributions can be made in a number of ways. A few examples are:
 
 ## Code of Conduct
 
-Please refer to `pacsanini`'s [Code of Conduct](CODE_OF_CONDUCT.md) to learn about the values we adhere to and promote.
+Please refer to `pacsanini`'s [Code of Conduct](code_of_conduct.md) to learn about the values we adhere to and promote.
 
 ## Reporting Issues and Submitting PRs
 
@@ -77,7 +77,3 @@ make tox
 ## Updating Dependencies
 
 If dependencies need to be updated in the project, you should use `poetry`. If the dependency you are updating or adding impacts the project's core code, use `poetry add <package_name>`. If the dependency is for development purposes (eg: testing or linting), use `poetry add -D <package_name>`.
-
-## Credits
-
-[PSF Code of Conduct]: https://www.python.org/psf/conduct/
