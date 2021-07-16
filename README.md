@@ -1,4 +1,5 @@
 [![Documentation Status](https://readthedocs.org/projects/pacsanini/badge/?version=latest)](https://pacsanini.readthedocs.io/en/latest/?badge=latest)
+![GitHub](https://img.shields.io/github/license/Therapixel/pacsanini) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Therapixel/pacsanini)
 
 # pacsanini
 
