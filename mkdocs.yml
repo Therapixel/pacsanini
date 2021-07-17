@@ -38,6 +38,7 @@ nav:
   - 'CLI Reference': 'cli_reference/index.md'
   - About:
     - Contributing: 'about/contributing.md'
+    - 'Developer Certificate of Origin': 'about/dco.md'
     - 'Code of Conduct': 'about/code_of_conduct.md'
     - License: 'about/license.md'
 
