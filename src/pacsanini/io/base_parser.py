@@ -120,8 +120,8 @@ def parse_dir(
         stop_working = threading.Event()
         stop_consuming = threading.Event()
 
-        worker_queue = queue.Queue()
-        consumer_queue = queue.Queue()
+        worker_queue: queue.Queue = queue.Queue()
+        consumer_queue: queue.Queue = queue.Queue()
 
         consumer_thread = threading.Thread(
             target=_thread_consumer,

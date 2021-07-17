@@ -46,7 +46,7 @@ def parse_dir2df(
     pd.DataFrame
         The parsed DICOM tag results as a DataFrame.
     """
-    results = []
+    results: list = []
 
     parse_dir(
         src,

@@ -213,7 +213,7 @@ def parse_dicom(
     for tag in tags:
         if isinstance(tag, dict):
             tag = DicomTag(**tag)
-        results[tag.tag_alias] = tag.tag_value(dicom)
+        results[str(tag.tag_alias)] = tag.tag_value(dicom)
 
     return results
 

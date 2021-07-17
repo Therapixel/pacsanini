@@ -89,7 +89,7 @@ def find_cli(config: str, debug: bool):
     help="The path to the configuration file to use for networking commands.",
 )
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
-def move_cli(config: dict, debug: bool):
+def move_cli(config: str, debug: bool):
     """Move the DICOM resources specified by the resources parameter in the
     configuration file.
     """
@@ -108,7 +108,9 @@ def move_cli(config: dict, debug: bool):
 
     query_level = pacsanini_config.move.query_level
 
-    resources = read_resources(pacsanini_config.storage.resources)
+    resources = read_resources(
+        pacsanini_config.storage.resources, pacsanini_config.move.query_level
+    )
 
     if query_level == "patient":
         move_func = move_patients(

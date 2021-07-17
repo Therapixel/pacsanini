@@ -5,7 +5,7 @@
 """The orchestra pipeline provides access to an all inclusive method
 for finding, moving, and parsing DICOM resources.
 """
-from typing import Union
+from typing import Union, cast
 
 import luigi
 
@@ -44,7 +44,7 @@ class FindDICOMResources(luigi.Task):
             self.config.storage.resources,
         )
         kwargs = dict(
-            dicom_fields=self.config.find.fields,
+            dicom_fields=self.config.find.search_fields,
             start_date=self.config.find.start_date,
             end_date=self.config.find.end_date,
             modality=self.config.find.modality,
@@ -143,7 +143,7 @@ def run_pacsanini_pipeline(config: Union[str, PacsaniniConfig]):
         load_func = (
             PacsaniniConfig.from_json if ext == "json" else PacsaniniConfig.from_yaml
         )
-        config = load_func(config)
+        config = cast(PacsaniniConfig, load_func(config))
 
     if not config.can_find():
         raise InvalidConfigError("Missing find configuration.")

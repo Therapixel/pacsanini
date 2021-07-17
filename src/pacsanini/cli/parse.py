@@ -210,7 +210,7 @@ def gen_parser(output: str, fmt: str):
             load_func = json.load if fmt == "json" else yaml.load
             try:
                 with open(output) as in_:
-                    new_conf = load_func(in_)
+                    new_conf = load_func(in_)  # type: ignore
             except (json.JSONDecodeError, yaml.YAMLError):
                 raise ConfigFormatError(
                     f"{output} was expected to be in {fmt} format but is invalid."
