@@ -24,7 +24,12 @@ If the issue a code bug, please follow the guidelines provided in this excellent
 
 ### Submitting PRs
 
-Before submitting PRs to [GitHub](https://github.com/Therapixel/pacsanini/pulls), please ensure that the changes provided by your contributions are tested (see the [running tests](#running-tests) section). Although test suites are automatically run when you will submit the PR, it is easier for the reviewer to review it when there is less trouble.
+Before submitting PRs to [GitHub](https://github.com/Therapixel/pacsanini/pulls), please ensure that:
+
+* you have read and consent to the Developer Certificate of Origin (DCO) [policy](https://pacsanini.readthedocs.io/en/latest/about/dco/)
+  (which can be found in the docs).
+* the changes provided by your contributions are tested (see the [running tests](#running-tests) section). Although test suites are automatically run when you will submit
+  the PR, it is easier for the reviewer to review it when there is less trouble.
 
 ## Setting Up Your Environment
 
