@@ -1,17 +1,18 @@
 # Welcome to pacsanini
 
-`pacsanini` is a package designed to help with the collection of DICOM files
-and the extraction of DICOM tags (metadata) for structuring purposes.
-
-### Overview
+`pacsanini` 🎻 is a package designed to help with the collection of DICOM files and the extraction
+of DICOM tags (metadata) for structuring purposes.
 
 `pacsanini`'s functionalities come out of a desire to facilitate research in
 medical imagery by easing the process of data collection and structuring.
-
 The two main pain points for this are:
 
 * acquiring data from a PACS
 * extracting metadata from DICOM files in research-ready formats (eg: csv)
+
+The project seeks to target medical/research professionals that are not necessarily
+familiar with coding but wish to obtain data sets and software engineers that wish to
+build applications with a certain level of abstraction.
 
 ## User Guide
 

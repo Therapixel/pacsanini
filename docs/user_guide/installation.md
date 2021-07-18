@@ -1,28 +1,34 @@
 # Installation
 
-Installing `pacsanini` can be done in one of the following two ways
--given that you have already cloned the project somewhere as such:
+Pacsanini can be installed via [PyPI](https://pypi.org/project/pacsanini/) using:
+
+* `pip`
 
 ```bash
-git clone https://github.com/Therapixel/pacsanini.git
-cd pacsanini
+pip install pacsanini
 ```
 
-## pip
+* `poetry`
 
 ```bash
-pip install .
+poetry add pacsanini
 ```
 
-## poetry
-
-To install dependencies:
-```bash
-poetry install --no-root --no-dev
-```
-
-To install dependencies and dev-dependencies:
+If you want a cutting-edge version of the project you can also install the project
+from the [GitHub project's master branch](https://github.com/Therapixel/pacsanini):
 
 ```bash
-poetry install --no-root
+pip install git+https://github.com/Therapixel/pacsanini.git
+# or
+poetry add git+https://github.com/Therapixel/pacsanini.git
 ```
+
+Installing the package in this way will enable you to import `pacsanini` in your
+projects and have access the `pacsanini` command line tool.
+
+
+## Installation for local development
+
+You can also install `pacsanini` with `poetry` after cloning the project with `git`
+on your local machine. See the [contributing page](../about/contributing.md) for
+more details.
