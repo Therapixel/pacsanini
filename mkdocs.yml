@@ -12,6 +12,7 @@ markdown_extensions:
     - pymdownx.highlight
     - pymdownx.superfences
     - pymdownx.inlinehilite
+    - admonition
     - pymdownx.emoji:
         emoji_index: !!python/name:materialx.emoji.twemoji
         emoji_generator: !!python/name:materialx.emoji.to_svg
@@ -23,6 +24,10 @@ nav:
     - Installation: 'user_guide/installation.md'
     - Configuration: 'user_guide/configuration.md'
     - Collection: 'user_guide/collection.md'
+    - Tutorials:
+      - 'Finding DICOM': 'user_guide/tutorials/finding.md'
+      - 'Moving DICOM': 'user_guide/tutorials/moving.md'
+      - 'Parsing DICOM': 'user_guide/tutorials/parsing.md'
   - 'API Reference':
     - Overview: 'api_reference/index.md'
     - cli: 'api_reference/cli.md'

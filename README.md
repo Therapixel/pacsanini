@@ -2,7 +2,7 @@
 ![PyPI](https://img.shields.io/pypi/v/pacsanini)
 ![PyPI - Status](https://img.shields.io/pypi/status/pacsanini)
 [![Documentation Status](https://readthedocs.org/projects/pacsanini/badge/?version=latest)](https://pacsanini.readthedocs.io/en/latest/?badge=latest)
-![GitHub](https://img.shields.io/github/license/Therapixel/pacsanini) 
+![GitHub](https://img.shields.io/github/license/Therapixel/pacsanini)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Therapixel/pacsanini)
 
 # pacsanini
@@ -78,11 +78,6 @@ docker run pacsanini --help
 The following topics are the main areas where `pacsanini` can improve as a library and a tool.
 Of course, these topics are up for discussion and such discussions are encouraged in the
 [GitHub issues](https://github.com/Therapixel/pacsanini/issues) section.
-
-### Documentation
-
-* 🚧 Provide more in-depth examples of how `pacsanini` can be used and be useful inside
-  python applications
 
 ### Data Collection
 
