@@ -214,6 +214,9 @@ markers = [
 ]
 minversion = "6.0"
 testpaths = ["tests"]
+filterwarnings = [
+  'ignore:Starting in pydicom 3.0, Dataset.file_meta must be a FileMetaDataset class instance',
+]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
