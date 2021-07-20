@@ -29,6 +29,14 @@ def read_resources(resources_path: str, query_level: QueryLevel) -> List[str]:
     -------
     List[str]
         A list of unique UIDS found in the given file.
+
+    Raises
+    ------
+    InvalidResourceFile
+        An InvalidResourceFile error is raised if the input CSV file
+        does not contain a "PatientID" column if the query level is
+        PATIENT or a "StudyInstanceUID" column if the query level is
+        STUDY.
     """
     resources = pd.read_csv(resources_path)
     if resources.shape[1] == 1:
