@@ -51,7 +51,7 @@ def get_dicom_tag_value(
         if seq is None or seq.VM == 0:
             # ValueMultiplicity set to 0 indicates an invalid sequence.
             return None
-        return get_dicom_tag_value(seq[0], sub_tag)
+        return get_dicom_tag_value(seq[0], sub_tag, callback=callback)
 
     try:
         data_el = data.data_element(tag_name)
