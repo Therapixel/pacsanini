@@ -58,6 +58,16 @@ def test_get_dicom_tag_value(dicom: pydicom.FileDataset):
     new_value = parse.get_dicom_tag_value(dicom, "NonExistent.Tag")
     assert new_value is None
 
+    # parse a nested tag without callback
+    new_value = parse.get_dicom_tag_value(dicom, "ViewCodeSequence.CodeValue")
+    assert new_value == "R-10226"
+
+    # parse a nested tag with callback
+    new_value = parse.get_dicom_tag_value(
+        dicom, "ViewCodeSequence.CodeValue", callback=rand_val
+    )
+    assert new_value == "foobar"
+
 
 @pytest.mark.parse
 def test_get_tag_value(dicom: pydicom.FileDataset):
