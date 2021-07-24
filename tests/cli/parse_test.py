@@ -33,6 +33,7 @@ def test_parse(data_dir):
     )
     assert result_csv.exit_code == 0
     assert len(result_csv.output) > 0
+    assert ",dicom_path" in result_csv.output
 
     result_json = runner.invoke(
         parse,
@@ -43,10 +44,12 @@ def test_parse(data_dir):
             os.path.join(data_dir, "tags_conf.json"),
             "--fmt",
             "json",
+            "--exclude-path",
         ],
     )
     assert result_json.exit_code == 0
     assert len(result_json.output) > 0
+    assert '"dicom_path"' not in result_json.output
 
     result_invalid = result_json = runner.invoke(
         parse,

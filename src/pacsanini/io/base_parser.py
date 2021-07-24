@@ -105,7 +105,7 @@ def parse_dir(
     nb_threads : int
         The number of threads to use for the parsing of DICOM files.
     include_path : bool
-        If True, add a "dicom_path" key to the results directory.
+        If True, the default, add a "dicom_path" key to the results directory.
     """
     if not os.path.exists(src):
         raise FileNotFoundError(f"'{src}' does not exist.")

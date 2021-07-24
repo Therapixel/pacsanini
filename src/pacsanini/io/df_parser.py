@@ -22,7 +22,7 @@ def parse_dir2df(
     src: Union[str, PathLike],
     parser: DicomTagGroup,
     nb_threads: int = 1,
-    include_path: bool = False,
+    include_path: bool = True,
 ) -> pd.DataFrame:
     """Parse a DICOM directory and return the parsed DICOM
     tag results as a DataFrame.
@@ -39,7 +39,7 @@ def parse_dir2df(
         files. The default is 1.
     include_path : bool
         If True, add a "dicom_path" key to the parsed results.
-        The default is False.
+        The default is True.
 
     Returns
     -------

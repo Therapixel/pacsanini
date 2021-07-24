@@ -61,9 +61,11 @@ from pacsanini.parse import DicomTagGroup
     ),
 )
 @option(
-    "--include-path",
+    "--include-path/--exclude-path",
     cls=GroupOption,
     is_flag=True,
+    default=True,
+    show_default=True,
     help_group="Output Options",
     help="Include DICOM file paths in the output results.",
 )
