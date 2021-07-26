@@ -25,7 +25,7 @@ def parse_dir2csv(
     parser: DicomTagGroup,
     dest: Union[str, PathLike, TextIO],
     nb_threads: int = 1,
-    include_path: bool = False,
+    include_path: bool = True,
     mode: str = "w",
 ):
     """Parse a DICOM directory and write results to a CSV
@@ -45,7 +45,7 @@ def parse_dir2csv(
         files. The default is 1.
     include_path : bool
         If True, add a "dicom_path" key to the parsed results.
-        The default is False.
+        The default is True.
     mode : str
         Whether to write ("w") or append ("a") to the
         destination file.
@@ -99,7 +99,7 @@ def parse_dir2json(
     parser: DicomTagGroup,
     dest: Union[str, PathLike, TextIO],
     nb_threads: int = 1,
-    include_path: bool = False,
+    include_path: bool = True,
     mode: str = "w",
 ):
     """Parse a DICOM directory and write results to a JSON
@@ -119,7 +119,7 @@ def parse_dir2json(
         files. The default is 1.
     include_path : bool
         If True, add a "dicom_path" key to the parsed results.
-        The default is False.
+        The default is True.
     mode : str
         Whether to write ("w") or append ("a") to the
         destination file.
