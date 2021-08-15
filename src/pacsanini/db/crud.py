@@ -60,6 +60,8 @@ def add_found_study(dcm: Dataset, session: Session) -> None:
             value = elem.value
             if elem.VR == "PN":
                 value = str(value)
+            elif attr == "StudyDate":
+                value = convert.str2datetime(value)  # type: ignore
 
         setattr(db_study, alias, value)
 
@@ -135,7 +137,8 @@ def add_image(
 class DBWrapper:
     """A wrapper class for the database connections. The purpose of this is
     to be able to open database connections lazily inside a thread that may
-    not be the application's main thread.
+    not be the application's main thread. It is recommended to use instances
+    of this class inside a context manager.
 
     Attributes
     ----------

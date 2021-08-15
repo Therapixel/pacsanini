@@ -6,6 +6,7 @@
 in a SQL database.
 """
 from datetime import datetime
+from typing import List
 
 from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
@@ -35,6 +36,17 @@ class StudyFind(Base):
     def __repr__(self):
         study_date = self.study_date.strftime("%Y%m%d")
         return f"<StudyFind: pid={self.patient_id}, pn={self.patient_name}, sd={study_date}>"
+
+    @classmethod
+    def cfind_fields(cls) -> List[str]:
+        """Returns the fields names that can be used for C-FIND queries."""
+        return [
+            "PatientName",
+            "PatientID",
+            "StudyInstanceUID",
+            "StudyDate",
+            "AccessionNumber",
+        ]
 
 
 class Images(Base):

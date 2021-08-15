@@ -33,6 +33,7 @@ nav:
     - cli: 'api_reference/cli.md'
     - config: 'api_reference/config.md'
     - convert: 'api_reference/convert.md'
+    - db: 'api_reference/db.md'
     - errors: 'api_reference/errors.md'
     - io: 'api_reference/io.md'
     - models: 'api_reference/models.md'

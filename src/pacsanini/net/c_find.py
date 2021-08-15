@@ -17,6 +17,7 @@ from pynetdicom.sop_class import (  # pylint: disable=no-name-in-module
     StudyRootQueryRetrieveInformationModelFind,
 )
 
+from pacsanini.db import DBWrapper, StudyFind, add_found_study
 from pacsanini.models import DicomNode, QueryLevel
 
 
@@ -388,3 +389,109 @@ def study_find2csv(
         for result in results_generator:
             res_dict = {field: getattr(result, field) for field in fields}
             writer.writerow(res_dict)
+
+
+def patient_find2sql(
+    local_node: Union[DicomNode, dict],
+    called_node: Union[DicomNode, dict],
+    conn_uri: str,
+    *,
+    start_date: datetime,
+    end_date: datetime = None,
+    modality: str = "",
+):
+    """Find DICOM resources from the destination DICOM node using the
+    specified DICOM criteria. Queries are made using the PATIENT
+    query retrieve level. Returned results will be persisted in the
+    specified database.
+
+    Parameters
+    ----------
+    local_node : Union[DicomNode, dict]
+        The source/calling DICOM node that seeks to retrieve information
+        from the destination node.
+    called_node : Union[DicomNode, dict]
+        The destination/target node from which information is queried
+        from.
+    conn_uri : str
+        The database's connection URI.
+    start_date : datetime
+        The date for which the query should be made.
+    end_date : datetime
+        If set, queries will range from the start_date to the end_date.
+        The end_date parameter must therefore be greater or equal to the
+        start_date parameter.
+    modality : str
+        If set, specify the DICOM modality to get results for.
+
+    Raises
+    ------
+    ValueError
+        A ValueError is raised if the called_node parameter does not
+        have set IP and port values or if the end_date parameter is
+        set and is smaller than the start_date parameter.
+    """
+    with DBWrapper(conn_uri, create_tables=True) as db:
+        results_generator = patient_find(
+            local_node,
+            called_node,
+            dicom_fields=StudyFind.cfind_fields(),
+            start_date=start_date,
+            end_date=end_date,
+            modality=modality,
+        )
+        for result in results_generator:
+            add_found_study(result, db.conn())
+
+
+def study_find2sql(
+    local_node: Union[DicomNode, dict],
+    called_node: Union[DicomNode, dict],
+    conn_uri: str,
+    *,
+    start_date: datetime,
+    end_date: datetime = None,
+    modality: str = "",
+):
+    """Find DICOM resources from the destination DICOM node using the
+    specified DICOM criteria. Queries are made using the STUDY
+    query retrieve level. Returned results will be persisted in the
+    specified database.
+
+    Parameters
+    ----------
+    local_node : Union[DicomNode, dict]
+        The source/calling DICOM node that seeks to retrieve information
+        from the destination node.
+    called_node : Union[DicomNode, dict]
+        The destination/target node from which information is queried
+        from.
+    conn_uri : str
+        The database's connection URI.
+    start_date : datetime
+        The date for which the query should be made.
+    end_date : datetime
+        If set, queries will range from the start_date to the end_date.
+        The end_date parameter must therefore be greater or equal to the
+        start_date parameter.
+    modality : str
+        If set, specify the DICOM modality to get results for.
+
+    Raises
+    ------
+    ValueError
+        A ValueError is raised if the called_node parameter does not
+        have set IP and port values or if the end_date parameter is
+        set and is smaller than the start_date parameter.
+    """
+    with DBWrapper(conn_uri, create_tables=True) as db:
+        results_generator = study_find(
+            local_node,
+            called_node,
+            dicom_fields=StudyFind.cfind_fields(),
+            start_date=start_date,
+            end_date=end_date,
+            modality=modality,
+        )
+        for result in results_generator:
+            add_found_study(result, db.conn())
