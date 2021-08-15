@@ -165,14 +165,14 @@ class DBWrapper:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
-    @lru_cache
+    @lru_cache(maxsize=1)
     def conn(self) -> Session:
         """Obtain a session instance"""
         self.engine = create_engine(self.conn_uri)
         if self.create_tables:
             Base.metadata.create_all(bind=self.engine, checkfirst=True)
-        Session = sessionmaker(bind=self.engine)
-        self.session = Session()
+        Session_ = sessionmaker(bind=self.engine)
+        self.session = Session_()
         return self.session
 
     def close(self):
