@@ -31,4 +31,4 @@ repos:
     rev: v0.910
     hooks:
     -   id: mypy
-        additional_dependencies: [types-click==7.1.2, types-PyYAML==5.4.3]
+        additional_dependencies: [types-click==7.1.2, types-PyYAML==5.4.3, 'sqlalchemy[mypy]']

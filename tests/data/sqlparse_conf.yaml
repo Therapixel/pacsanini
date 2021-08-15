@@ -1,0 +1,4 @@
+storage:
+  resources: "sqlite:///test_parsedb.sqlite"
+  resources_meta: "foobar.csv"
+  directory: "directory"

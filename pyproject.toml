@@ -22,6 +22,9 @@ exclude = '''
 )
 '''
 
+[tool.coverage.report]
+exclude_lines = ["pragma: no cover", "def __repr__", "if __name__ == .__main__.:"]
+
 [tool.isort]
 profile = "black"
 src_paths = ["src/pacsanini"]
@@ -70,6 +73,7 @@ pandas = "^1.2.4"
 pynetdicom = "^1.5.7"
 loguru = "^0.5.3"
 luigi = "^3.0.3"
+SQLAlchemy = {extras = ["mypy"], version = "^1.4.22"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"
@@ -202,9 +206,11 @@ markers = [
   "cli",
   "config",
   "convert",
+  "db",
   "io",
   "net",
-  "parse"
+  "parse",
+  "utils",
 ]
 minversion = "6.0"
 testpaths = ["tests"]

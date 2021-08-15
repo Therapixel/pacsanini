@@ -4,9 +4,9 @@ if they have the good columns.
 import pandas as pd
 import pytest
 
+from pacsanini import utils
 from pacsanini.errors import InvalidResourceFile
 from pacsanini.models import QueryLevel
-from pacsanini import utils
 
 
 @pytest.mark.utils
