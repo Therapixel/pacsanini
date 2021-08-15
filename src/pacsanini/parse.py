@@ -100,7 +100,7 @@ def get_tag_value(
     tags_to_check = [tag_name] if isinstance(tag_name, str) else tag_name
     for tag in tags_to_check:
         tag_val = get_dicom_tag_value(data, tag, callback=callback)
-        if tag_val is not None:
+        if tag_val:
             return tag_val
 
     if tag_val is None and default_val is not None:
