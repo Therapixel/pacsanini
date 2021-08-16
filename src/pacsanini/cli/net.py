@@ -18,6 +18,7 @@ from pacsanini.net import (
     run_server,
     study_find2csv,
 )
+from pacsanini.net.c_find import patient_find2sql, study_find2sql
 from pacsanini.utils import read_resources
 
 
@@ -65,20 +66,36 @@ def find_cli(config: str, debug: bool):
     if debug:
         debug_logger()
 
-    if pacsanini_config.find.query_level == QueryLevel.PATIENT:
-        find_func = patient_find2csv
+    dest = pacsanini_config.storage.resources
+    if dest.lower().startswith("sqlite"):
+        find_func_sql = (
+            patient_find2sql
+            if pacsanini_config.find.query_level == QueryLevel.PATIENT
+            else study_find2sql
+        )
+        find_func_sql(  # type: ignore
+            pacsanini_config.net.local_node,
+            pacsanini_config.net.called_node,
+            dest,
+            start_date=pacsanini_config.find.start_date,
+            end_date=pacsanini_config.find.end_date,
+            modality=pacsanini_config.find.modality,
+        )
     else:
-        find_func = study_find2csv
-
-    find_func(
-        pacsanini_config.net.local_node,
-        pacsanini_config.net.called_node,
-        pacsanini_config.storage.resources,
-        dicom_fields=pacsanini_config.find.search_fields,
-        start_date=pacsanini_config.find.start_date,
-        end_date=pacsanini_config.find.end_date,
-        modality=pacsanini_config.find.modality,
-    )
+        find_func_csv = (
+            patient_find2csv
+            if pacsanini_config.find.query_level == QueryLevel.PATIENT
+            else study_find2csv
+        )
+        find_func_csv(  # type: ignore
+            pacsanini_config.net.local_node,
+            pacsanini_config.net.called_node,
+            dest,
+            dicom_fields=pacsanini_config.find.search_fields,
+            start_date=pacsanini_config.find.start_date,
+            end_date=pacsanini_config.find.end_date,
+            modality=pacsanini_config.find.modality,
+        )
 
 
 @click.command(name="move", cls=GroupCommand)

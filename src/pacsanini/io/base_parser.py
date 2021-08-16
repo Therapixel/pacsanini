@@ -10,7 +10,9 @@ import queue
 import threading
 
 from collections.abc import Callable
-from typing import Union
+from typing import Optional, Union
+
+from pydicom import dcmread
 
 from pacsanini.parse import DicomTagGroup
 
@@ -25,7 +27,10 @@ def _thread_worker(
     while True:
         try:
             file_path = worker_queue.get(True, timeout=1)
-            result = parser.parse_dicom(file_path)
+            if parser is not None:
+                result = parser.parse_dicom(file_path)
+            else:
+                result = {"dicom": dcmread(file_path, stop_before_pixels=True)}
             if include_path:
                 result["dicom_path"] = file_path
             consumer_queue.put(result)
@@ -75,7 +80,7 @@ def _enqueue_files(src: Union[str, os.PathLike], worker_queue: queue.Queue):
 
 def parse_dir(
     src: Union[str, os.PathLike],
-    parser: DicomTagGroup,
+    parser: Optional[DicomTagGroup],
     callback: Callable,
     callback_args: tuple = None,
     callback_kwargs: dict = None,
@@ -92,8 +97,11 @@ def parse_dir(
     ----------
     src : Union[str, os.PathLike]
         The source DICOM path or directory to parse recursively.
-    parser : DicomTagGroup
-        The tags to get the DICOM tag values from.
+    parser : Optional[DicomTagGroup]
+        The tags to get the DICOM tag values from. If this is None,
+        the results passed to the callback function will not be a dict
+        containing a "dicom" key whose value will be the corresponding
+        pydicom.Dataset object.
     callback : Callable
         The callback functions to send results to for consumption.
         The first argument of the function should be reserved for
@@ -105,7 +113,7 @@ def parse_dir(
     nb_threads : int
         The number of threads to use for the parsing of DICOM files.
     include_path : bool
-        If True, the default, add a "dicom_path" key to the results directory.
+        If True, add a "dicom_path" key to the results dict.
     """
     if not os.path.exists(src):
         raise FileNotFoundError(f"'{src}' does not exist.")

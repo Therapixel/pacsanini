@@ -9,11 +9,29 @@ import json
 import os
 
 import pytest
+import yaml
 
 from click.testing import CliRunner
 
 from pacsanini.cli.parse import gen_parser, parse
 from pacsanini.parse import DicomTagGroup
+
+
+@pytest.fixture()
+def sqlparse_conf(tmpdir: str) -> str:
+    sql_path = f"sqlite:///{os.path.join(str(tmpdir), 'test.sqlite')}"
+    conf = {
+        "storage": {
+            "directory": "foobar",
+            "resources_meta": "test.csv",
+            "resources": sql_path,
+        }
+    }
+    conf_path = os.path.join(str(tmpdir), "conf.yaml")
+    with open(conf_path, "w") as out:
+        yaml.dump(conf, out)
+
+    return conf_path
 
 
 @pytest.mark.cli
@@ -63,6 +81,24 @@ def test_parse(data_dir):
         ],
     )
     assert result_invalid.exit_code != 0
+
+
+@pytest.mark.cli
+def test_parse_sql(data_dir, sqlparse_conf):
+    """Test that the parsing command functions correctly for sql."""
+    runner = CliRunner()
+    result_sql = runner.invoke(
+        parse,
+        [
+            "-i",
+            os.path.join(data_dir, "dicom-files"),
+            "-f",
+            sqlparse_conf,
+            "--fmt",
+            "sql",
+        ],
+    )
+    assert result_sql.exit_code == 0
 
 
 @pytest.mark.cli

@@ -14,9 +14,10 @@ import yaml
 from click import Choice, ClickException, Path, command, confirm, echo, option, prompt
 
 from pacsanini.cli.base import GroupCommand, GroupOption
+from pacsanini.config import PacsaniniConfig
+from pacsanini.db import parse_dir2sql
 from pacsanini.errors import ConfigFormatError
 from pacsanini.io import parse_dir2csv, parse_dir2json
-from pacsanini.parse import DicomTagGroup
 
 
 @command(name="parse", cls=GroupCommand)
@@ -46,12 +47,12 @@ from pacsanini.parse import DicomTagGroup
     type=Path(resolve_path=True),
     default=None,
     help_group="Output Options",
-    help="The output file to write results to. If unset, write to the standard output.",
+    help="The output file to write results to. If unset and the format is 'csv' or 'json', write to the standard output.",
 )
 @option(
     "--fmt",
     cls=GroupOption,
-    type=Choice(["csv", "json"]),
+    type=Choice(["csv", "json", "sql"]),
     default="csv",
     show_default=True,
     help_group="Output Options",
@@ -70,6 +71,13 @@ from pacsanini.parse import DicomTagGroup
     help="Include DICOM file paths in the output results.",
 )
 @option(
+    "--institution-name",
+    cls=GroupOption,
+    default=None,
+    help_group="Output Options",
+    help="If specified, include the institution name in SQL results.",
+)
+@option(
     "-m",
     "--mode",
     cls=GroupOption,
@@ -77,7 +85,7 @@ from pacsanini.parse import DicomTagGroup
     default="w",
     show_default=True,
     help_group="CSV Output Options",
-    help="The file writing mode ([w]rite or [a]ppend).",
+    help="The file writing mode for CSV and JSON formats ([w]rite or [a]ppend).",
 )
 @option(
     "-t",
@@ -95,6 +103,7 @@ def parse(
     output: str,
     fmt: str,
     include_path: bool,
+    institution_name: str,
     mode: str,
     threads: int,
 ):
@@ -112,9 +121,10 @@ def parse(
         raise ClickException(err_msg)
 
     if ext == "json":
-        parser = DicomTagGroup.from_json(config)
+        p_config = PacsaniniConfig.from_json(config)
     else:
-        parser = DicomTagGroup.from_yaml(config)
+        p_config = PacsaniniConfig.from_yaml(config)
+    parser = p_config.get_tags()
 
     if fmt == "csv":
         parse_dir2csv(
@@ -125,13 +135,20 @@ def parse(
             include_path=include_path,
             mode=mode if output else "w",
         )
-    else:
+    elif fmt == "json":
         parse_dir2json(
             src,
             parser,
             output if output else sys.stdout,
             nb_threads=threads,
             include_path=include_path,
+        )
+    else:
+        parse_dir2sql(
+            src,
+            p_config.storage.resources,
+            institution_name=institution_name,
+            nb_threads=threads,
         )
 
 
