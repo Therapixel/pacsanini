@@ -6,6 +6,11 @@
 for finding, moving, and parsing DICOM resources.
 """
 from typing import Union, cast
+from warnings import simplefilter
+
+
+# Ignore luigi warning on config file.
+simplefilter("ignore", category=DeprecationWarning)
 
 import luigi
 

@@ -106,3 +106,34 @@ class TestStoreSCPServer:
         dest_path = os.path.join(str(tmpdir), dcm.SOPInstanceUID)
         dest_path += ".dcm"
         assert os.path.exists(dest_path)
+
+    def test_storescp_server_with_callbacks(self, tmpdir: os.PathLike, dcm):
+        """Test that the storescp class supports callbacks correctly."""
+        dcm_node = {"ip": "localhost", "port": 11112, "aetitle": "myserver"}
+
+        out_path = os.path.join(tmpdir, "dummyfile")
+
+        def custom_func(new_dcm):
+            new_dcm.save_as(out_path)
+
+        self.server = run_server(
+            dcm_node,
+            data_dir=str(tmpdir),
+            sort_by=StorageSortKey.IMAGE,
+            callbacks=[custom_func],
+        )
+        assert self.server.scp
+
+        ae = AE()
+        assoc = ae.associate("localhost", 11112, contexts=StoragePresentationContexts)
+        assert assoc.is_established
+
+        status = assoc.send_c_store(dcm)
+        assert status.Status == 0
+
+        assoc.release()
+
+        dest_path = os.path.join(str(tmpdir), dcm.SOPInstanceUID)
+        dest_path += ".dcm"
+        assert os.path.exists(dest_path)
+        assert os.path.exists(out_path)

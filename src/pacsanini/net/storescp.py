@@ -10,29 +10,31 @@ UNABLE_TO_PROCESS (0xC216).
 import os
 
 from functools import partial
-from typing import Callable, List, Tuple, Union
-from warnings import filterwarnings
+from typing import Any, Callable, Dict, List, Union
+from warnings import simplefilter
 
 from loguru import logger
 from pydicom import Dataset
 from pynetdicom import AE, AllStoragePresentationContexts, evt
-from pynetdicom.events import Event, InterventionEvent
+from pynetdicom.events import Event
 from pynetdicom.status import Status
 
 from pacsanini.models import DicomNode, StorageSortKey
 
 
-filterwarnings(
-    action="ignore",
-    message="Starting in pydicom 3.0, Dataset.file_meta must be a FileMetaDataset class instance",
-)
+# Ignore 'Starting in pydicom 3.0, Dataset.file_meta must be a FileMetaDataset class instance'
+# as long as we stay on pydicom 2.X
+simplefilter("ignore", category=DeprecationWarning)
 
 Status.add("UNABLE_TO_DECODE", 0xC215)
 Status.add("UNABLE_TO_PROCESS", 0xC216)
 
 
 def default_store_handle(
-    event: Event, data_dir: str = "", sort_by: StorageSortKey = StorageSortKey.PATIENT
+    event: Event,
+    data_dir: str = "",
+    sort_by: StorageSortKey = StorageSortKey.PATIENT,
+    callbacks: List[Callable[[Any], Any]] = None,
 ) -> int:
     """Handle a C-STORE request event by writing the received DICOM file
     to the data_dir in the way specified by sort_by.
@@ -45,6 +47,10 @@ def default_store_handle(
         The directory to write results under.
     sort_by : StorageSortKey
         The organization to follow when writing DICOM files to disk.
+    callbacks : List[Callable[[Any], Any]]
+        If supplied pass the received DICOM file to the callable as
+        a positional argument (the first one) to each one of the
+        callables for processing.
 
     Returns
     -------
@@ -82,6 +88,10 @@ def default_store_handle(
     except OSError:
         return Status.UNABLE_TO_PROCESS  # pylint: disable=no-member
 
+    if callbacks is not None:
+        for func in callbacks:
+            func(ds)
+
     return 0x0000
 
 
@@ -98,9 +108,9 @@ class StoreSCPServer:
         be written to. The default is the current directory.
     sort_by : StorageSortKey
         The method by which DICOM files should be written to disk.
-    handlers : List[Tuple[InterventionEvent, Callable]]
-        The methods to call each time an event is triggered. If unset,
-        the default handler will be used.
+    callbacks : List[Callable[[Any], Any]]
+        If set, pass a list of callables that will be called on the
+        DICOM file after it is received and persisted to disk.
     """
 
     def __init__(
@@ -108,7 +118,7 @@ class StoreSCPServer:
         node: Union[DicomNode, dict],
         data_dir: str = "",
         sort_by: StorageSortKey = StorageSortKey.PATIENT,
-        handlers: List[Tuple[InterventionEvent, Callable]] = None,
+        callbacks: List[Callable[[Any], Any]] = None,
     ):
         if isinstance(node, dict):
             node = DicomNode(**node)
@@ -119,13 +129,12 @@ class StoreSCPServer:
         self.data_dir = data_dir
         self.sort_by = sort_by
 
-        self.using_default = False
-        if handlers is None:
-            default_handler = partial(
-                default_store_handle, data_dir=self.data_dir, sort_by=self.sort_by
-            )
-            handlers = [(evt.EVT_C_STORE, default_handler)]
-            self.using_default = True
+        kwargs: Dict[str, Any] = {"data_dir": self.data_dir, "sort_by": self.sort_by}
+        if callbacks is not None:
+            kwargs["callbacks"] = callbacks
+
+        handler = partial(default_store_handle, **kwargs)
+        handlers = [(evt.EVT_C_STORE, handler)]
         self.handlers = handlers
 
         self.scp = None
@@ -150,7 +159,7 @@ class StoreSCPServer:
         ae = AE(ae_title=self.node.aetitle)
         ae.supported_contexts = AllStoragePresentationContexts
 
-        if self.using_default and self.data_dir:
+        if self.data_dir:
             os.makedirs(self.data_dir, exist_ok=True)
 
         logger.debug(f"Starting SCP server: {self}")
@@ -181,7 +190,7 @@ def run_server(
     node: Union[DicomNode, dict],
     data_dir: str = "",
     sort_by: StorageSortKey = StorageSortKey.PATIENT,
-    handlers=None,
+    callbacks: List[Callable[[Any], Any]] = None,
     block: bool = False,
 ) -> Union[StoreSCPServer, None]:
     """Instantiate and run a storescp server using the provided
@@ -194,9 +203,9 @@ def run_server(
         be written to. The default is the current directory.
     sort_by : StorageSortKey
         The method by which DICOM files should be written to disk.
-    handlers : List[Tuple[InterventionEvent, Callable]]
-        The methods to call each time an event is triggered. If unset,
-        the default handler will be used.
+    callbacks : List[Callable[[Any], Any]]
+        If set, pass a list of callables that will be called on the
+        DICOM file after it is received and persisted to disk.
     block : bool
         If False, the default, run the storescp server in a different
         thread. If True, the running server will block the current
@@ -210,7 +219,9 @@ def run_server(
         (in which case you must subsequently call the shudown method)
         or None if the server is in blocking mode.
     """
-    server = StoreSCPServer(node, data_dir=data_dir, sort_by=sort_by, handlers=handlers)
+    server = StoreSCPServer(
+        node, data_dir=data_dir, sort_by=sort_by, callbacks=callbacks
+    )
     if block:
         server.run(block=True)
         return None
