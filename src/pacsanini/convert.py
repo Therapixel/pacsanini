@@ -141,14 +141,16 @@ def timedelta2str(time_delta: timedelta) -> str:
     return ref_date.strftime("%H%M%S.%f")
 
 
-def dcm2dict(dcm: Union[Dataset, str], include_pixels: bool = False) -> Dict[str, dict]:
+def dcm2dict(
+    dcm: Union[Dataset, bytes, str], include_pixels: bool = False
+) -> Dict[str, dict]:
     """Return the JSON-compatiable dict representation of a DICOM file.
 
     Parameters
     ----------
-    dcm : Union[Dataset, str]
-        The DICOM Dataset or file path to convert to use in order to produce
-        the JSON dict.
+    dcm : Union[Dataset, bytes, str]
+        The DICOM Dataset, bytes, or file path to convert to use in order
+        to produce the JSON dict.
     include_pixels : bool
         If True, include the pixel array in the generated dict. The default
         is False.
@@ -158,7 +160,7 @@ def dcm2dict(dcm: Union[Dataset, str], include_pixels: bool = False) -> Dict[str
     dict
         A JSON-compatible dict representation of the DICOM.
     """
-    if isinstance(dcm, str):
+    if isinstance(dcm, (bytes, str)):
         dcm = dcmread(dcm, stop_before_pixels=not include_pixels)
     if not include_pixels:
         dcm.PixelData = None
