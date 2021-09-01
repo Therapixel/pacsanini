@@ -40,7 +40,7 @@ class StudyFind(Base):
     retrieved = Column(Boolean, default=False)
     found_on = Column(DateTime, default=datetime.utcnow)
 
-    images: "Images" = relationship("Images", back_populates="study_find")
+    study: "Studies" = relationship("Studies", back_populates="study_find")
 
     def __repr__(self):
         study_date = self.study_date.strftime("%Y%m%d")
@@ -83,11 +83,14 @@ class Studies(Base):
     __tablename__ = "studies"
 
     id = Column(Integer, primary_key=True)
+    study_find_id = Column(Integer, ForeignKey("studies_find.id"), nullable=True)
     patient_id = Column(Integer, ForeignKey("patients.id"))
     study_uid = Column(String, unique=True)
     study_date = Column(DateTime)
     patient_age = Column(Integer, default=-1)
     accession_number = Column(String)
+
+    study_find: "StudyFind" = relationship("StudyFind", back_populates="study")
 
     def __repr__(self) -> str:
         return f"<Study: {self.study_uid}>"
@@ -118,7 +121,6 @@ class Images(Base):
 
     id = Column(Integer, primary_key=True)
     series_id = Column(Integer, ForeignKey("series.id"))
-    study_find_id = Column(Integer, ForeignKey("studies_find.id"), nullable=True)
     institution = Column(String)
     patient_id = Column(String, index=True)
     patient_name = Column(String)
@@ -133,8 +135,6 @@ class Images(Base):
     manufacturer_model_name = Column(String)
     meta = Column(JSON, nullable=True)
     filepath = Column(String, nullable=True)
-
-    study_find: "StudyFind" = relationship("StudyFind", back_populates="images")
 
     def __repr__(self):
         return f"<Image: {self.image_uid}>"

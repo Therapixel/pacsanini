@@ -36,7 +36,7 @@ def add_found_study(session: Session, dcm: Dataset) -> Optional[StudyFind]:
         session.add(study_find)
         session.commit()
     except exc.IntegrityError:
-        session.flush()
+        session.rollback()
         return None
     else:
         return study_find
