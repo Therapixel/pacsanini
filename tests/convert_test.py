@@ -141,6 +141,26 @@ def test_double_conversion():
 
 
 @pytest.mark.convert
+def test_agestr2years():
+    """Test that age strings are converted to the correct integers."""
+    assert convert.agestr2years("730D") == 2
+
+    assert convert.agestr2years("156W") == 3
+
+    assert convert.agestr2years("038m") == 3
+
+    assert convert.agestr2years("001Y") == 1
+
+    assert convert.agestr2years("000Y") == 0
+
+    with pytest.raises(ValueError):
+        convert.agestr2years("03203402Y")
+
+    with pytest.raises(ValueError):
+        convert.agestr2years("005f")
+
+
+@pytest.mark.convert
 def test_dcm2dict(dicom_path: str, dicom: Dataset):
     """Test that converting a DICOM file to a dict can correctly
     be done.

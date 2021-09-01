@@ -441,7 +441,7 @@ def patient_find2sql(
             modality=modality,
         )
         for result in results_generator:
-            add_found_study(result, db.conn())
+            add_found_study(db.conn(), result)
 
 
 def study_find2sql(
@@ -494,4 +494,4 @@ def study_find2sql(
             modality=modality,
         )
         for result in results_generator:
-            add_found_study(result, db.conn())
+            add_found_study(db.conn(), result)

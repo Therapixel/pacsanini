@@ -32,9 +32,18 @@ def test_parse_sql2db(data_dir: str, sqlite_db_path: str, dicom: FileDataset):
     assert len(results) > 1
     for result in results:
         assert os.path.exists(result.filepath)
-        assert result.institution_name == "foobar"
+        assert result.institution == "foobar"
+
+    file_count = 0
+    for _, _, files in os.walk(data_dir):
+        file_count += len([f for f in files if f.endswith("dcm")])
+
+    assert len(results) == file_count
 
     res: Images = (
         session.query(Images).filter(Images.image_uid == dicom.SOPInstanceUID).first()
     )
     assert res
+
+    session.close()
+    engine.dispose()
