@@ -15,6 +15,7 @@ from pacsanini.db.utils import initialize_database
 @click.option(
     "-f",
     "--config",
+    required=True,
     type=click.Path(exists=True),
     help="The path to the configuration file to use for initializing the database.",
 )
