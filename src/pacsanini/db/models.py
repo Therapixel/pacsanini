@@ -8,7 +8,16 @@ in a SQL database.
 from datetime import datetime
 from typing import List
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+)
 from sqlalchemy.orm import declarative_base, relationship
 
 
@@ -31,7 +40,7 @@ class StudyFind(Base):
     retrieved = Column(Boolean, default=False)
     found_on = Column(DateTime, default=datetime.utcnow)
 
-    images: "Images" = relationship("Images", back_populates="study_find")
+    study: "Studies" = relationship("Studies", back_populates="study_find")
 
     def __repr__(self):
         study_date = self.study_date.strftime("%Y%m%d")
@@ -49,6 +58,60 @@ class StudyFind(Base):
         ]
 
 
+class Patients(Base):
+    """Table corresponding to patient-level data found in
+    DICOM files.
+    """
+
+    __tablename__ = "patients"
+
+    id = Column(Integer, primary_key=True)
+    patient_id = Column(String, unique=True)
+    patient_name = Column(String)
+    patient_birth_date = Column(DateTime)
+    institution = Column(String)
+
+    def __repr__(self) -> str:
+        return f"<Patient: {self.patient_id}>"
+
+
+class Studies(Base):
+    """Table corresponding to study-level data found in
+    DICOM files.
+    """
+
+    __tablename__ = "studies"
+
+    id = Column(Integer, primary_key=True)
+    study_find_id = Column(Integer, ForeignKey("studies_find.id"), nullable=True)
+    patient_id = Column(Integer, ForeignKey("patients.id"))
+    study_uid = Column(String, unique=True)
+    study_date = Column(DateTime)
+    patient_age = Column(Integer, default=-1)
+    accession_number = Column(String)
+
+    study_find: "StudyFind" = relationship("StudyFind", back_populates="study")
+
+    def __repr__(self) -> str:
+        return f"<Study: {self.study_uid}>"
+
+
+class Series(Base):
+    """Table corresponding to series-level data found in
+    DICOM files.
+    """
+
+    __tablename__ = "series"
+
+    id = Column(Integer, primary_key=True)
+    study_id = Column(Integer, ForeignKey("studies.id"))
+    series_uid = Column(String, unique=True)
+    modality = Column(String)
+
+    def __repr__(self) -> str:
+        return f"<Series: {self.series_uid}"
+
+
 class Images(Base):
     """Table corresponding to the studies that were queried and
     retrieved from the PACS.
@@ -57,24 +120,21 @@ class Images(Base):
     __tablename__ = "images"
 
     id = Column(Integer, primary_key=True)
-    study_find_id = Column(Integer, ForeignKey("studies_find.id"), nullable=True)
-    institution_name = Column(String)
-    patient_id = Column(String)
+    series_id = Column(Integer, ForeignKey("series.id"))
+    institution = Column(String)
+    patient_id = Column(String, index=True)
     patient_name = Column(String)
-    study_uid = Column(String)
+    study_uid = Column(String, index=True)
     study_date = Column(DateTime)
     series_uid = Column(String)
     modality = Column(String)
     sop_class_uid = Column(String)
-    image_uid = Column(String, index=True)
+    image_uid = Column(String, unique=True)
+    acquisition_time = Column(Float, default=-1)
     manufacturer = Column(String)
+    manufacturer_model_name = Column(String)
     meta = Column(JSON, nullable=True)
     filepath = Column(String, nullable=True)
 
-    study_find: "StudyFind" = relationship("StudyFind", back_populates="images")
-
     def __repr__(self):
-        study_date = (
-            self.study_date.strftime("%Y%m%d") if self.study_date is not None else None
-        )
-        return f"<Image: pid={self.patient_id}, sd={study_date}, iuid={self.image_uid}>"
+        return f"<Image: {self.image_uid}>"

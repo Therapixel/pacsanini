@@ -6,5 +6,5 @@
 DICOM data to databases.
 """
 from pacsanini.db.crud import DBWrapper, add_found_study, add_image
-from pacsanini.db.models import Base, Images, StudyFind
+from pacsanini.db.models import Base, Images, Patients, Series, Studies, StudyFind
 from pacsanini.db.parser import parse_dir2sql

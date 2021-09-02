@@ -14,9 +14,9 @@ from pacsanini.io.base_parser import parse_dir
 def _inner_sql(result: dict, db_wrapper: DBWrapper, institution_name: str):
     dcm = result.pop("dicom")
     add_image(
-        dcm,
         db_wrapper.conn(),
-        institution_name=institution_name,
+        dcm,
+        institution=institution_name,
         filepath=result["dicom_path"],
     )
 

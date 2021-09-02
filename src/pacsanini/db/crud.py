@@ -7,32 +7,19 @@ single items (studies found from C-FIND requests or DICOM metadata) into a
 given database.
 """
 from functools import lru_cache
+from typing import Optional, Union
 
 from loguru import logger
 from pydicom import Dataset
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from pacsanini import convert
-from pacsanini.db.models import Base, Images, StudyFind
+from pacsanini.db.dcm2model import dcm2dbmodels, dcm2study_finding
+from pacsanini.db.models import Base, Images, Patients, Series, Studies, StudyFind
 
 
-TAG_MAPPING = {
-    "patient_name": "PatientName",
-    "patient_id": "PatientID",
-    "study_uid": "StudyInstanceUID",
-    "study_date": "StudyDate",
-    "accession_number": "AccessionNumber",
-    "series_uid": "SeriesInstanceUID",
-    "modality": "Modality",
-    "sop_class_uid": "SOPClassUID",
-    "image_uid": "SOPInstanceUID",
-    "manufacturer": "Manufacturer",
-}
-
-
-def add_found_study(dcm: Dataset, session: Session) -> None:
+def add_found_study(session: Session, dcm: Dataset) -> Optional[StudyFind]:
     """Add study metadata to the database after a successfull C-FIND
     operation.
 
@@ -43,95 +30,97 @@ def add_found_study(dcm: Dataset, session: Session) -> None:
     session : Session
         The database session.
     """
-    fields = [
-        ("PatientName", "patient_name"),
-        ("PatientID", "patient_id"),
-        ("StudyInstanceUID", "study_uid"),
-        ("StudyDate", "study_date"),
-        ("AccessionNumber", "accession_number"),
-    ]
+    study_find = dcm2study_finding(dcm)
 
-    db_study = StudyFind()
-    for (attr, alias) in fields:
-        if attr not in dcm:
-            value = None
-        else:
-            elem = dcm[attr]
-            value = elem.value
-            if elem.VR == "PN":
-                value = str(value)
-            elif attr == "StudyDate":
-                value = convert.str2datetime(value)  # type: ignore
-
-        setattr(db_study, alias, value)
-
-    session.add(db_study)
-    session.commit()
+    try:
+        session.add(study_find)
+        session.commit()
+    except exc.IntegrityError:
+        session.rollback()
+        return None
+    else:
+        return study_find
 
 
 def add_image(
-    dcm: Dataset, session: Session, institution_name: str = None, filepath: str = None
-):
-    """Add image metadata to the database. If the image's StudyInstanceUID's value
-    can be found in the `studies_find` table, the image will be linked to it by
-    populating the study_find_id field.
+    session: Session,
+    dcm: Union[str, Dataset],
+    institution: str = None,
+    filepath: str = None,
+) -> Optional[Images]:
+    """Insert an image to the database. If the image belongs to a new patient, study, or
+    series, the relevant tables will also be updated. If the image already exists in the
+    database (based on the SOPInstanceUID), the transaction will be rolled back.
 
     Parameters
     ----------
-    dcm : Dataset
-        The DICOM instance to add to the database.
     session : Session
-        The database session to use.
-    institution_name : str
-        The name of the institution to associate the image with.
+        The database session to use for inserting the DICOM image into the database.
+    dcm : Union[str, Dataset]
+        The DICOM image to add to the database.
+    institution : str
+        The institution that the DICOM image belongs to. The default is None.
     filepath : str
-        If set, fill in the filepath value for the new DICOM record.
+        The DICOM image's filepath. The default is None
+
+    Returns
+    -------
+    Images
+        The inserted Images object. If the insert was unsuccessfull, None
+        is returned.
     """
-    result = (
-        session.query(Images).filter(Images.image_uid == dcm.SOPInstanceUID).first()
+    pat, study, series, image = dcm2dbmodels(
+        dcm, institution=institution, filepath=filepath
     )
-    if result:
-        logger.warning(
-            f"{dcm.SOPInstanceUID} already exists in the database. Skipping new insert."
+
+    try:
+        session.add(pat)
+        session.flush()
+        pat_dbid = pat.id
+    except exc.IntegrityError:
+        session.rollback()
+        pat_dbid = (
+            session.query(Patients.id)
+            .filter(Patients.patient_id == pat.patient_id)
+            .first()[0]
         )
-        return
 
-    db_image = Images()
+    study.patient_id = pat_dbid
+    try:
+        session.add(study)
+        session.flush()
+        study_dbid = study.id
+    except exc.IntegrityError:
+        session.rollback()
+        study_dbid = (
+            session.query(Studies.id)
+            .filter(Studies.study_uid == study.study_uid)
+            .first()[0]
+        )
 
-    for column in Images.__table__.columns:
-        col_name = column.name
-        if col_name not in TAG_MAPPING:
-            continue
-        alias = col_name
-        attr = TAG_MAPPING[alias]
+    series.study_id = study_dbid
+    try:
+        session.add(series)
+        session.flush()
+        series_dbid = series.id
+    except exc.IntegrityError:
+        session.rollback()
+        series_dbid = (
+            session.query(Series.id)
+            .filter(Series.series_uid == series.series_uid)
+            .first()[0]
+        )
 
-        if attr not in dcm:
-            value = None
-        else:
-            elem = dcm[attr]
-            if elem.VR == "PN":
-                value = str(elem.value)
-            elif attr == "StudyDate":
-                value = convert.str2datetime(elem.value)  # type: ignore
-            else:
-                value = elem.value
-        setattr(db_image, alias, value)
-
-    db_image.meta = convert.dcm2dict(dcm, include_pixels=False)
-    db_image.institution_name = institution_name
-
-    result = (
-        session.query(StudyFind)
-        .filter(StudyFind.study_uid == dcm.StudyInstanceUID)
-        .first()
-    )
-    if result:
-        db_image.study_find_id = result.id
-    if filepath:
-        db_image.filepath = filepath
-
-    session.add(db_image)
-    session.commit()
+    image.series_id = series_dbid
+    try:
+        session.add(image)
+        session.commit()
+    except exc.IntegrityError:
+        logger.warning("{image} already exists in the database. Rolling back commit...")
+        session.rollback()
+        return None
+    else:
+        return image
 
 
 class DBWrapper:

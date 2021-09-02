@@ -28,6 +28,8 @@ nav:
       - 'Finding DICOM': 'user_guide/tutorials/finding.md'
       - 'Moving DICOM': 'user_guide/tutorials/moving.md'
       - 'Parsing DICOM': 'user_guide/tutorials/parsing.md'
+      - 'Storing DICOM': 'user_guide/tutorials/storescp.md'
+      - 'Using databases': 'user_guide/tutorials/database.md'
   - 'API Reference':
     - Overview: 'api_reference/index.md'
     - cli: 'api_reference/cli.md'

@@ -141,6 +141,53 @@ def timedelta2str(time_delta: timedelta) -> str:
     return ref_date.strftime("%H%M%S.%f")
 
 
+def agestr2years(age_str: str) -> int:
+    """Convert an Age String into a int where the age unit is
+    in years. Expected formats are: nnnD, nnnW, nnnM, nnnY.
+
+    Notes
+    -----
+    The return value may not yield precise results as the following
+    assumptions are made: there are 365 days in a year, there are 52
+    weeks in a year, and there are 12 months in a year.
+
+    Parameters
+    ----------
+    age_str : str
+        A DICOM Age String value.
+
+    Returns
+    -------
+    int
+        The number of years as an int.
+
+    Raises
+    ------
+    ValueError
+        A ValueError is raised if the age_str is not a valid
+        Age String.
+    """
+    if not age_str or len(age_str) != 4:
+        raise ValueError(
+            f"Expected the age string to be in the 'nnn[DWMY]' format. Obtained: {age_str}"
+        )
+    age_unit = age_str[-1].upper()
+    if age_unit not in "DWMY":
+        raise ValueError(
+            f"Expected the age string unit to be one of 'D', 'W', 'M', 'Y'. Obtained: {age_unit}"
+        )
+
+    age_value = age_str[:3]
+    if age_unit == "D":
+        return int(age_value) // 365
+    elif age_unit == "W":
+        return int(age_value) // 52
+    elif age_unit == "M":
+        return int(age_value) // 12
+    else:
+        return int(age_value)
+
+
 def dcm2dict(
     dcm: Union[Dataset, bytes, str], include_pixels: bool = False
 ) -> Dict[str, dict]:
