@@ -5,6 +5,13 @@
 """The db module exposes classes and methods that are useful for linking
 DICOM data to databases.
 """
-from pacsanini.db.crud import DBWrapper, add_found_study, add_image
+from pacsanini.db.crud import (
+    DBWrapper,
+    add_found_study,
+    add_image,
+    get_studies_to_move,
+    get_study_uids_to_move,
+    update_retrieved_study,
+)
 from pacsanini.db.models import Base, Images, Patients, Series, Studies, StudyFind
 from pacsanini.db.parser import parse_dir2sql

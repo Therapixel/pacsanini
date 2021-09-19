@@ -2,9 +2,12 @@
 # All rights reserved.
 # This file is subject to the terms and conditions described in the
 # LICENSE file distributed in this package.
+"""The c_move module contains methods that can be used to perform C-MOVE
+operations with a PACS node.
+"""
 from datetime import time
 from time import sleep
-from typing import Generator, List, Tuple, Union
+from typing import Any, Callable, Generator, List, Tuple, Union
 
 from loguru import logger
 from pydicom.dataset import Dataset
@@ -14,6 +17,7 @@ from pynetdicom.sop_class import (  # pylint: disable=no-name-in-module
     StudyRootQueryRetrieveInformationModelMove,
 )
 from pynetdicom.status import Status
+from sqlalchemy.orm import Session
 
 from pacsanini.config import MoveConfig
 from pacsanini.models import DicomNode, QueryLevel, StorageSortKey
@@ -34,6 +38,8 @@ def move(
     sort_by: StorageSortKey = StorageSortKey.PATIENT,
     start_time: Union[str, time] = None,
     end_time: Union[str, time] = None,
+    db_session: Session = None,
+    callbacks: List[Callable[[Any], Any]] = None,
 ) -> Generator[Tuple[int, str], None, None]:
     """Move resources requested by the local_node to the
     dest_node by querying the called_node.
@@ -75,6 +81,11 @@ def move(
         should end. If a string, it must be in ISO format (eg:
         HH, HH:MM, HH:MM:SS). The start_time parameter must also be
         set.
+    db_session : Session
+        The database session to use if move results are to be stored
+        in a database.
+    callbacks : List[Callable[[Any], Any]]
+        The callbacks to pass on to the storescp server.
 
     Yields
     ------
@@ -104,7 +115,13 @@ def move(
     else:
         root_model, query_lvl = StudyRootQueryRetrieveInformationModelMove, "STUDY"
 
-    with StoreSCPServer(dest_node, data_dir=directory, sort_by=sort_by):
+    with StoreSCPServer(
+        dest_node,
+        data_dir=directory,
+        sort_by=sort_by,
+        db_session=db_session,
+        callbacks=callbacks,
+    ):
         ae = AE(ae_title=local_node.aetitle)
         ae.add_requested_context(root_model)
 
@@ -133,7 +150,9 @@ def move(
                         else:
                             yield Status.STATUS_FAILURE, uid  # pylint: disable=no-member
                 else:
-                    logger.info("Failed to establish a connection.")
+                    logger.warning(
+                        f"Failed to establish a connection with {called_node}."
+                    )
                     yield Status.STATUS_FAILURE, uid  # pylint: disable=no-member
             finally:
                 if assoc is not None and assoc.is_alive():
@@ -150,6 +169,7 @@ def move_studies(
     sort_by: StorageSortKey = StorageSortKey.PATIENT,
     start_time: Union[str, time] = None,
     end_time: Union[str, time] = None,
+    db_session: Session = None,
 ) -> Generator[Tuple[int, str], None, None]:
     """Move studies requested by the local_node to the
     dest_node by querying the called_node. Studies to move
@@ -183,6 +203,9 @@ def move_studies(
         should end. If a string, it must be in ISO format (eg:
         HH, HH:MM, HH:MM:SS). The start_time parameter must also be
         set.
+    db_session : Session
+        The database session to use if move results are to be stored
+        in a database.
 
     Yields
     ------
@@ -201,6 +224,7 @@ def move_studies(
         sort_by=sort_by,
         start_time=start_time,
         end_time=end_time,
+        db_session=db_session,
     )
 
 
@@ -214,6 +238,7 @@ def move_patients(
     sort_by: StorageSortKey = StorageSortKey.PATIENT,
     start_time: Union[str, time] = None,
     end_time: Union[str, time] = None,
+    db_session: Session = None,
 ) -> Generator[Tuple[int, str], None, None]:
     """Move patients requested by the local_node to the
     dest_node by querying the called_node. Studies to move
@@ -247,6 +272,9 @@ def move_patients(
         should end. If a string, it must be in ISO format (eg:
         HH, HH:MM, HH:MM:SS). The start_time parameter must also be
         set.
+    db_session : Session
+        The database session to use if move results are to be stored
+        in a database.
 
     Yields
     ------
@@ -265,4 +293,5 @@ def move_patients(
         sort_by=sort_by,
         start_time=start_time,
         end_time=end_time,
+        db_session=db_session,
     )
