@@ -8,16 +8,7 @@ in a SQL database.
 from datetime import datetime
 from typing import List
 
-from sqlalchemy import (
-    JSON,
-    Boolean,
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-)
+from sqlalchemy import JSON, Column, DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 
 
@@ -37,7 +28,7 @@ class StudyFind(Base):
     study_uid = Column(String, index=True, unique=True)
     study_date = Column(DateTime)
     accession_number = Column(String)
-    retrieved = Column(Boolean, default=False)
+    retrieved_on = Column(DateTime, default=None)
     found_on = Column(DateTime, default=datetime.utcnow)
 
     study: "Studies" = relationship("Studies", back_populates="study_find")

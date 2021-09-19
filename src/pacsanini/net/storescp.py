@@ -18,7 +18,10 @@ from pydicom import Dataset
 from pynetdicom import AE, AllStoragePresentationContexts, evt
 from pynetdicom.events import Event
 from pynetdicom.status import Status
+from sqlalchemy import exc
+from sqlalchemy.orm import Session
 
+from pacsanini.db.crud import add_image, update_retrieved_study
 from pacsanini.models import DicomNode, StorageSortKey
 
 
@@ -28,12 +31,14 @@ simplefilter("ignore", category=DeprecationWarning)
 
 Status.add("UNABLE_TO_DECODE", 0xC215)
 Status.add("UNABLE_TO_PROCESS", 0xC216)
+Status.add("UNABLE_TO_RECORD", 0xC217)
 
 
 def default_store_handle(
     event: Event,
     data_dir: str = "",
     sort_by: StorageSortKey = StorageSortKey.PATIENT,
+    db_session: Session = None,
     callbacks: List[Callable[[Any], Any]] = None,
 ) -> int:
     """Handle a C-STORE request event by writing the received DICOM file
@@ -61,6 +66,7 @@ def default_store_handle(
         ds: Dataset = event.dataset
         ds.file_meta = event.file_meta
     except:  # pylint: disable=bare-except
+        logger.warning("Unable to decode received DICOM")
         return Status.UNABLE_TO_DECODE  # pylint: disable=no-member
 
     if StorageSortKey.PATIENT == sort_by:
@@ -81,12 +87,20 @@ def default_store_handle(
 
     try:
         dcm_dir = os.path.dirname(dest)
-        if dcm_dir:
-            os.makedirs(dcm_dir, exist_ok=True)
+        os.makedirs(dcm_dir, exist_ok=True)
         ds.save_as(dest, write_like_original=False)
         logger.info(f"{ds.SOPInstanceUID} is persisted.")
     except OSError:
+        logger.warning(f"Failed to write {ds.StudyInstanceUID} to disk")
         return Status.UNABLE_TO_PROCESS  # pylint: disable=no-member
+
+    if db_session is not None:
+        try:
+            add_image(db_session, ds, filepath=dest)
+            update_retrieved_study(db_session, ds.StudyInstanceUID)
+        except exc.SQLAlchemyError as err:
+            logger.warning(f"Failed to update database due to {err}")
+            return Status.UNABLE_TO_RECORD  # pylint: disable=no-member
 
     if callbacks is not None:
         for func in callbacks:
@@ -108,6 +122,9 @@ class StoreSCPServer:
         be written to. The default is the current directory.
     sort_by : StorageSortKey
         The method by which DICOM files should be written to disk.
+    db_session : Session
+        Optional. If specified, received studies will be parsed and
+        persisted to the provided database. The default is None.
     callbacks : List[Callable[[Any], Any]]
         If set, pass a list of callables that will be called on the
         DICOM file after it is received and persisted to disk.
@@ -118,6 +135,7 @@ class StoreSCPServer:
         node: Union[DicomNode, dict],
         data_dir: str = "",
         sort_by: StorageSortKey = StorageSortKey.PATIENT,
+        db_session: Session = None,
         callbacks: List[Callable[[Any], Any]] = None,
     ):
         if isinstance(node, dict):
@@ -130,6 +148,8 @@ class StoreSCPServer:
         self.sort_by = sort_by
 
         kwargs: Dict[str, Any] = {"data_dir": self.data_dir, "sort_by": self.sort_by}
+        if db_session is not None:
+            kwargs["db_session"] = db_session
         if callbacks is not None:
             kwargs["callbacks"] = callbacks
 
@@ -144,6 +164,10 @@ class StoreSCPServer:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            logger.warning(f"Shutting down server due to {exc_type}")
+            logger.warning(f"Exception value: {exc_val}")
+            logger.warning(f"Exception traceback: {exc_tb}")
         self.shutdown()
 
     def __repr__(self) -> str:

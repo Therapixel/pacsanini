@@ -6,9 +6,13 @@
 import click
 
 from pynetdicom import debug_logger
+from sqlalchemy import create_engine, exc
+from sqlalchemy.orm import sessionmaker
 
 from pacsanini.cli.base import GroupCommand
+from pacsanini.cli.utils import is_db_uri
 from pacsanini.config import PacsaniniConfig
+from pacsanini.db.crud import get_study_uids_to_move
 from pacsanini.models import QueryLevel
 from pacsanini.net import (
     echo,
@@ -67,7 +71,7 @@ def find_cli(config: str, debug: bool):
         debug_logger()
 
     dest = pacsanini_config.storage.resources
-    if dest.lower().startswith("sqlite"):
+    if is_db_uri(dest):
         find_func_sql = (
             patient_find2sql
             if pacsanini_config.find.query_level == QueryLevel.PATIENT
@@ -125,35 +129,56 @@ def move_cli(config: str, debug: bool):
 
     query_level = pacsanini_config.move.query_level
 
-    resources = read_resources(
-        pacsanini_config.storage.resources, pacsanini_config.move.query_level
-    )
+    engine = None
+    db_session = None
+    dest = pacsanini_config.storage.resources
 
-    if query_level == "patient":
-        move_func = move_patients(
-            pacsanini_config.net.local_node,
-            pacsanini_config.net.called_node,
-            patient_ids=resources,
-            dest_node=pacsanini_config.net.dest_node,
-            directory=pacsanini_config.storage.directory,
-            sort_by=pacsanini_config.storage.sort_by,
-            start_time=pacsanini_config.move.start_time,
-            end_time=pacsanini_config.move.end_time,
-        )
-    else:
-        move_func = move_studies(
-            pacsanini_config.net.local_node,
-            pacsanini_config.net.called_node,
-            study_uids=resources,
-            dest_node=pacsanini_config.net.dest_node,
-            directory=pacsanini_config.storage.directory,
-            sort_by=pacsanini_config.storage.sort_by,
-            start_time=pacsanini_config.move.start_time,
-            end_time=pacsanini_config.move.end_time,
-        )
+    try:
+        if is_db_uri(dest):
+            if dest.lower().startswith("sqlite"):
+                connect_args = {"check_same_thread": False}
+            else:
+                connect_args = None
 
-    for (status, resource) in move_func:
-        click.echo(f"Move status for {resource}: {status}")
+            engine = create_engine(dest, connect_args=connect_args)
+            DBSsession = sessionmaker(bind=engine)
+            db_session = DBSsession()
+            resources = get_study_uids_to_move(db_session)
+        else:
+            resources = read_resources(
+                pacsanini_config.storage.resources, pacsanini_config.move.query_level
+            )
+
+        if query_level == "patient":
+            move_func = move_patients(
+                pacsanini_config.net.local_node,
+                pacsanini_config.net.called_node,
+                patient_ids=resources,
+                dest_node=pacsanini_config.net.dest_node,
+                directory=pacsanini_config.storage.directory,
+                sort_by=pacsanini_config.storage.sort_by,
+                start_time=pacsanini_config.move.start_time,
+                end_time=pacsanini_config.move.end_time,
+                db_session=db_session,
+            )
+        else:
+            move_func = move_studies(
+                pacsanini_config.net.local_node,
+                pacsanini_config.net.called_node,
+                study_uids=resources,
+                dest_node=pacsanini_config.net.dest_node,
+                directory=pacsanini_config.storage.directory,
+                sort_by=pacsanini_config.storage.sort_by,
+                start_time=pacsanini_config.move.start_time,
+                end_time=pacsanini_config.move.end_time,
+                db_session=db_session,
+            )
+
+        for (status, resource) in move_func:
+            click.echo(f"Move status for {resource}: {status}")
+    except exc.SQLAlchemyError:
+        db_session.close_all()
+        engine.dispose()
 
 
 @click.command(name="server")

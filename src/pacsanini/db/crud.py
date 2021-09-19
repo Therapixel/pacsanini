@@ -6,8 +6,9 @@
 single items (studies found from C-FIND requests or DICOM metadata) into a
 given database.
 """
+from datetime import datetime
 from functools import lru_cache
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 from loguru import logger
 from pydicom import Dataset
@@ -61,7 +62,7 @@ def add_image(
     institution : str
         The institution that the DICOM image belongs to. The default is None.
     filepath : str
-        The DICOM image's filepath. The default is None
+        The DICOM image's filepath. The default is None.
 
     Returns
     -------
@@ -121,6 +122,71 @@ def add_image(
         return None
     else:
         return image
+
+
+def update_retrieved_study(session: Session, study_uid: str) -> Optional[StudyFind]:
+    """Update a found study by setting its retrieved_on value to the current
+    date. If the relevant study was already retrieved, it will not be updated
+    but the StudyFind instance will be returned. If the found study does not
+    exist, None is returned.
+
+    Parameters
+    ----------
+    session : Session
+        The database session to use.
+    study_uid : str
+        The study instance uid to mark as retrieved.
+
+    Returns
+    -------
+    Optional[StudyFind]
+        The StudyFind instance if it was found or updated. None otherwise.
+    """
+    found_study: StudyFind = session.query(StudyFind).filter(
+        StudyFind.study_uid == study_uid
+    ).first()
+    if found_study is None:
+        return None
+
+    if found_study.retrieved_on is None:
+        found_study.retrieved_on = datetime.utcnow()
+        session.add(found_study)
+        session.commit()
+    return found_study
+
+
+def get_studies_to_move(session: Session) -> List[StudyFind]:
+    """Get a list of StudyFind instances that haven't been retrieved
+    according to their `retrieved_on` key.
+
+    Parameters
+    ----------
+    session : Session
+        The database session to use.
+
+    Returns
+    -------
+    List[StudyFind]
+        A list of StudyFind resources that should be moved.
+    """
+    query = session.query(StudyFind).filter(StudyFind.retrieved_on == None)
+    return query.all()
+
+
+def get_study_uids_to_move(session: Session) -> List[str]:
+    """Get a list of StudyInstanceUID values to retrieve.
+
+    Parameters
+    ----------
+    session : Session
+        The database session to use.
+
+    Returns
+    -------
+    List[str]
+        A list of StudyInstanceUID resources that should be moved.
+    """
+    return [study_find.study_uid for study_find in get_studies_to_move(session)]
 
 
 class DBWrapper:
