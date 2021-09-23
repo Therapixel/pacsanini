@@ -75,7 +75,7 @@ def find_dicom_resources(config: PacsaniniConfig):
         )
     else:
         find_func = (
-            net.patient_find2csv
+            net.patient_find2csv  # type: ignore
             if patient_query
             else net.study_find2csv  # type: ignore
         )
