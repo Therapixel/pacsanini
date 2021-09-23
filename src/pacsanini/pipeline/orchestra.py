@@ -72,7 +72,7 @@ def run_pacsanini_pipeline(
         config = load_configuration(config_path_param)
 
         needs_creating = check_if_database_creation_needed(config, init_db_param)
-        with case(needs_creating, True):
+        with case(needs_creating, True):  # type: ignore
             creation_task = create_database_and_tables(config)
             flow.add_task(creation_task)
 
@@ -80,7 +80,7 @@ def run_pacsanini_pipeline(
         move_taks = move_dicom_resources(config, upstream_tasks=[find_task])
 
         needs_parsing = check_if_parsing_needed(config, upstream_tasks=[move_taks])
-        with case(needs_parsing, True):
+        with case(needs_parsing, True):  # type: ignore
             parse_task = parse_dicom_resources(config, nb_threads_param)
             flow.add_task(parse_task)
 
