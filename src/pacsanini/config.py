@@ -230,7 +230,7 @@ class StorageConfig(BaseModel):
     """
 
     resources: str
-    resources_meta: str
+    resources_meta: Optional[str] = "resources_meta.csv"
     directory: str
     sort_by: StorageSortKey = StorageSortKey.PATIENT
 
