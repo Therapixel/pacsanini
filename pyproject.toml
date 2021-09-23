@@ -75,6 +75,7 @@ loguru = "^0.5.3"
 luigi = "^3.0.3"
 SQLAlchemy = {extras = ["mypy"], version = "^1.4.22"}
 SQLAlchemy-Utils = "^0.37.8"
+prefect = "^0.15.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"
