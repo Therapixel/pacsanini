@@ -15,3 +15,4 @@ from pacsanini.db.crud import (
 )
 from pacsanini.db.models import Base, Images, Patients, Series, Studies, StudyFind
 from pacsanini.db.parser import parse_dir2sql
+from pacsanini.db.utils import get_db_session
