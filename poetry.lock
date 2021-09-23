@@ -336,14 +336,6 @@ optional = false
 python-versions = "~=3.5"
 
 [[package]]
-name = "docutils"
-version = "0.17.1"
-description = "Docutils -- Python Documentation Utilities"
-category = "main"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-
-[[package]]
 name = "entrypoints"
 version = "0.3"
 description = "Discover and load entry points from installed packages."
@@ -671,14 +663,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
-name = "lockfile"
-version = "0.12.2"
-description = "Platform-independent file locking module"
-category = "main"
-optional = false
-python-versions = "*"
-
-[[package]]
 name = "loguru"
 version = "0.5.3"
 description = "Python logging made (stupidly) simple"
@@ -692,24 +676,6 @@ win32-setctime = {version = ">=1.0.0", markers = "sys_platform == \"win32\""}
 
 [package.extras]
 dev = ["codecov (>=2.0.15)", "colorama (>=0.3.4)", "flake8 (>=3.7.7)", "tox (>=3.9.0)", "tox-travis (>=0.12)", "pytest (>=4.6.2)", "pytest-cov (>=2.7.1)", "Sphinx (>=2.2.1)", "sphinx-autobuild (>=0.7.1)", "sphinx-rtd-theme (>=0.4.3)", "black (>=19.10b0)", "isort (>=5.1.1)"]
-
-[[package]]
-name = "luigi"
-version = "3.0.3"
-description = "Workflow mgmgt + task scheduling + dependency resolution."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-python-daemon = "*"
-python-dateutil = ">=2.7.5,<3"
-tenacity = ">=6.3.0,<7"
-tornado = ">=5.0,<7"
-
-[package.extras]
-prometheus = ["prometheus-client (==0.5.0)"]
-toml = ["toml (<2.0.0)"]
 
 [[package]]
 name = "lunr"
@@ -1557,21 +1523,6 @@ toml = ["toml"]
 yaml = ["ruamel.yaml"]
 
 [[package]]
-name = "python-daemon"
-version = "2.3.0"
-description = "Library to implement a well-behaved Unix daemon process."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-docutils = "*"
-lockfile = ">=0.10"
-
-[package.extras]
-test = ["coverage", "docutils", "testscenarios (>=0.4)", "testtools"]
-
-[[package]]
 name = "python-dateutil"
 version = "2.8.1"
 description = "Extensions to the standard Python datetime module"
@@ -1814,20 +1765,6 @@ description = "Traceback serialization library."
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-
-[[package]]
-name = "tenacity"
-version = "6.3.1"
-description = "Retry code until it succeeds"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-six = ">=1.9.0"
-
-[package.extras]
-doc = ["reno", "sphinx", "tornado (>=4.5)"]
 
 [[package]]
 name = "terminado"
@@ -2075,7 +2012,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.1"
-content-hash = "c458cd267bbf60b0b1a80623d76ffdba5667c76128dfdd99f3cf68c5da41d10d"
+content-hash = "334a950e119adfa79b02191351ce8e50810583892157aabb7105dfe8973d934f"
 
 [metadata.files]
 altgraph = [
@@ -2310,10 +2247,6 @@ docker = [
 docstring-parser = [
     {file = "docstring_parser-0.7.3.tar.gz", hash = "sha256:cde5fbf8b846433dfbde1e0f96b7f909336a634d5df34a38cb75050c7346734a"},
 ]
-docutils = [
-    {file = "docutils-0.17.1-py2.py3-none-any.whl", hash = "sha256:cf316c8370a737a022b72b56874f6602acf974a37a9fba42ec2876387549fc61"},
-    {file = "docutils-0.17.1.tar.gz", hash = "sha256:686577d2e4c32380bb50cbb22f575ed742d58168cee37e99117a854bcd88f125"},
-]
 entrypoints = [
     {file = "entrypoints-0.3-py2.py3-none-any.whl", hash = "sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19"},
     {file = "entrypoints-0.3.tar.gz", hash = "sha256:c70dd71abe5a8c85e55e12c19bd91ccfeec11a6e99044204511f9ed547d48451"},
@@ -2479,16 +2412,9 @@ locket = [
     {file = "locket-0.2.1-py2.py3-none-any.whl", hash = "sha256:12b6ada59d1f50710bca9704dbadd3f447dbf8dac6664575c1281cadab8e6449"},
     {file = "locket-0.2.1.tar.gz", hash = "sha256:3e1faba403619fe201552f083f1ecbf23f550941bc51985ac6ed4d02d25056dd"},
 ]
-lockfile = [
-    {file = "lockfile-0.12.2-py2.py3-none-any.whl", hash = "sha256:6c3cb24f344923d30b2785d5ad75182c8ea7ac1b6171b08657258ec7429d50fa"},
-    {file = "lockfile-0.12.2.tar.gz", hash = "sha256:6aed02de03cba24efabcd600b30540140634fc06cfa603822d508d5361e9f799"},
-]
 loguru = [
     {file = "loguru-0.5.3-py3-none-any.whl", hash = "sha256:f8087ac396b5ee5f67c963b495d615ebbceac2796379599820e324419d53667c"},
     {file = "loguru-0.5.3.tar.gz", hash = "sha256:b28e72ac7a98be3d28ad28570299a393dfcd32e5e3f6a353dec94675767b6319"},
-]
-luigi = [
-    {file = "luigi-3.0.3.tar.gz", hash = "sha256:7edc05a32bcff5aad28d7c7e3b15b761ef13fe2a495692602ebf0800eba66849"},
 ]
 lunr = [
     {file = "lunr-0.5.8-py2.py3-none-any.whl", hash = "sha256:aab3f489c4d4fab4c1294a257a30fec397db56f0a50273218ccc3efdbf01d6ca"},
@@ -2913,10 +2839,6 @@ python-box = [
     {file = "python-box-5.4.1.tar.gz", hash = "sha256:b68e0f8abc86f3deda751b3390f64df64a0989459de51ba4db949662a7b4d8ac"},
     {file = "python_box-5.4.1-py3-none-any.whl", hash = "sha256:60ae9156de34cf92b899bd099580950df70a5b0813e67a3310a1cdd1976457fa"},
 ]
-python-daemon = [
-    {file = "python-daemon-2.3.0.tar.gz", hash = "sha256:bda993f1623b1197699716d68d983bb580043cf2b8a66a01274d9b8297b0aeaf"},
-    {file = "python_daemon-2.3.0-py2.py3-none-any.whl", hash = "sha256:191c7b67b8f7aac58849abf54e19fe1957ef7290c914210455673028ad454989"},
-]
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
     {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
@@ -3133,10 +3055,6 @@ tabulate = [
 tblib = [
     {file = "tblib-1.7.0-py2.py3-none-any.whl", hash = "sha256:289fa7359e580950e7d9743eab36b0691f0310fce64dee7d9c31065b8f723e23"},
     {file = "tblib-1.7.0.tar.gz", hash = "sha256:059bd77306ea7b419d4f76016aef6d7027cc8a0785579b5aad198803435f882c"},
-]
-tenacity = [
-    {file = "tenacity-6.3.1-py2.py3-none-any.whl", hash = "sha256:baed357d9f35ec64264d8a4bbf004c35058fad8795c5b0d8a7dc77ecdcbb8f39"},
-    {file = "tenacity-6.3.1.tar.gz", hash = "sha256:e14d191fb0a309b563904bbc336582efe2037de437e543b38da749769b544d7f"},
 ]
 terminado = [
     {file = "terminado-0.10.0-py3-none-any.whl", hash = "sha256:048ce7b271ad1f94c48130844af1de163e54913b919f8c268c89b36a6d468d7c"},
