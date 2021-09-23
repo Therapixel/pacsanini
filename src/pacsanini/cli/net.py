@@ -10,7 +10,6 @@ from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker
 
 from pacsanini.cli.base import GroupCommand
-from pacsanini.cli.utils import is_db_uri
 from pacsanini.config import PacsaniniConfig
 from pacsanini.db.crud import get_study_uids_to_move
 from pacsanini.models import QueryLevel
@@ -23,7 +22,7 @@ from pacsanini.net import (
     study_find2csv,
 )
 from pacsanini.net.c_find import patient_find2sql, study_find2sql
-from pacsanini.utils import read_resources
+from pacsanini.utils import is_db_uri, read_resources
 
 
 @click.command(name="echo")

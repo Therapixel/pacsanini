@@ -15,6 +15,21 @@ from pacsanini.pipeline import run_pacsanini_pipeline
     type=click.Path(exists=True),
     help="The path to the configuration file to use for networking commands.",
 )
-def orchestrate_cli(config: str):
+@click.option(
+    "-t",
+    "--threads",
+    type=int,
+    default=1,
+    show_default=True,
+    help="The number of threads to use (applicable if the backend is not a database).",
+)
+@click.option(
+    "--init-db/--no-init-db",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="If --init-db is set and the results backend is a database: create the database.",
+)
+def orchestrate_cli(config: str, threads: int, init_db: bool):
     """Run the find-move-parse pipeline orchestrated by pacsanini."""
-    run_pacsanini_pipeline(config)
+    run_pacsanini_pipeline(config, nb_threads=threads, init_db=init_db)

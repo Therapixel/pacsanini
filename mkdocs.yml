@@ -30,6 +30,7 @@ nav:
       - 'Parsing DICOM': 'user_guide/tutorials/parsing.md'
       - 'Storing DICOM': 'user_guide/tutorials/storescp.md'
       - 'Using databases': 'user_guide/tutorials/database.md'
+      - 'Running a pipeline': 'user_guide/tutorials/pipeline.md'
   - 'API Reference':
     - Overview: 'api_reference/index.md'
     - cli: 'api_reference/cli.md'
