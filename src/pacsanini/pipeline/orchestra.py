@@ -19,6 +19,7 @@ from pacsanini.pipeline.tasks import (
     move_dicom_resources,
     parse_dicom_resources,
 )
+from pacsanini.utils import is_db_uri
 
 
 def run_pacsanini_pipeline(
@@ -61,7 +62,7 @@ def run_pacsanini_pipeline(
         raise InvalidConfigError("Missing find configuration.")
     if not config_.can_move():
         raise InvalidConfigError("Missing move configuration.")
-    if not config_.can_parse():
+    if not config_.can_parse() and not is_db_uri(config_.storage.resources):
         raise InvalidConfigError("Missing parse configuration.")
 
     with Flow("My First Flow") as flow:

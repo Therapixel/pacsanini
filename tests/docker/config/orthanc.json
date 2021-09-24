@@ -1,0 +1,12 @@
+{
+    "Name": "${ORTHANC_NAME:-TPXORTHANC}",
+    "DicomAet": "${ORTHANC_AET:-TPXORTHANC}",
+    "DefaultEncoding": "Utf8",
+    "RemoteAccessAllowed": true,
+    "AuthenticationEnabled": true,
+    "RegisteredUsers": {
+        "${ORTHANC_ADMIN_USERNAME:-orthanc}": "${ORTHANC_ADMIN_PASSWORD:-orthanc}"
+    },
+    "DicomModalitiesInDatabase": true,
+    "OrthancPeersInDatabase": true
+}

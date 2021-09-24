@@ -59,6 +59,9 @@ To simplify the setup process you can run `make setup`.
 
 </details>
 
+To be able to run all tests, you will also need to have docker
+(see here for and [installation guide](https://docs.docker.com/get-docker/)). This is used to run test suites.
+
 ## Running tests
 
 Although tests are automatically run when new pull requests are submitted, you are encouraged to run tests locally. Testing is done with the `pytest` framework. This is useful for running quick tests.

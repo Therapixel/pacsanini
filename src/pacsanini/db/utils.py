@@ -79,6 +79,6 @@ def get_db_session(db_uri: str) -> Generator[Session, None, None]:
         raise
     finally:
         if db_session is not None:
-            db_session.close_all()
+            db_session.close()
         if engine is not None:
             engine.dispose()
