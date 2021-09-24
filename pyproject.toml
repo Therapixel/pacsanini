@@ -97,6 +97,8 @@ tox = "^3.23.1"
 mypy = "^0.910"
 types-click = "^7.1.2"
 types-PyYAML = "^5.4.3"
+pytest-docker = "^0.10.3"
+types-requests = "^2.25.8"
 
 [tool.poetry.scripts]
 pacsanini = 'pacsanini.cli:entry_point'
@@ -211,6 +213,7 @@ markers = [
   "io",
   "net",
   "parse",
+  "pipeline",
   "utils",
 ]
 minversion = "6.0"

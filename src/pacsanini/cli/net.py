@@ -176,7 +176,7 @@ def move_cli(config: str, debug: bool):
         for (status, resource) in move_func:
             click.echo(f"Move status for {resource}: {status}")
     except exc.SQLAlchemyError:
-        db_session.close_all()
+        db_session.close()
         engine.dispose()
 
 
