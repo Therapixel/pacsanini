@@ -15,6 +15,7 @@ from pacsanini import db, io, net
 from pacsanini.config import PacsaniniConfig
 from pacsanini.db.utils import initialize_database
 from pacsanini.models import QueryLevel
+from pacsanini.pipeline.notifications import find_email_notifier, move_email_notifier
 from pacsanini.utils import is_db_uri, read_resources
 
 
@@ -50,7 +51,7 @@ def create_database_and_tables(config: PacsaniniConfig):
             engine.dispose()
 
 
-@task(**NETWORK_TASK_PARAMS)
+@task(**NETWORK_TASK_PARAMS, state_handlers=[find_email_notifier])
 def find_dicom_resources(config: PacsaniniConfig):
     """Find DICOM resources and store results in the specified
     destination.
@@ -82,7 +83,7 @@ def find_dicom_resources(config: PacsaniniConfig):
     find_func(*args, **kwargs)  # type: ignore
 
 
-@task(**NETWORK_TASK_PARAMS)
+@task(**NETWORK_TASK_PARAMS, state_handlers=[move_email_notifier])
 def move_dicom_resources(config: PacsaniniConfig):
     """Move DICOM resources that have been previously
     retrieved -possibly by the find_dicom_resources task.

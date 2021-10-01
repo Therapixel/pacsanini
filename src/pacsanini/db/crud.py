@@ -142,9 +142,9 @@ def update_retrieved_study(session: Session, study_uid: str) -> Optional[StudyFi
     Optional[StudyFind]
         The StudyFind instance if it was found or updated. None otherwise.
     """
-    found_study: StudyFind = session.query(StudyFind).filter(
-        StudyFind.study_uid == study_uid
-    ).first()
+    found_study: StudyFind = (
+        session.query(StudyFind).filter(StudyFind.study_uid == study_uid).first()
+    )
     if found_study is None:
         return None
 
