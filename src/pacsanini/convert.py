@@ -204,7 +204,7 @@ def dcm2dict(
 
     Returns
     -------
-    dict
+    Dict[str, dict]
         A JSON-compatible dict representation of the DICOM.
     """
     if isinstance(dcm, (bytes, str)):
@@ -212,12 +212,23 @@ def dcm2dict(
     if not include_pixels:
         dcm.PixelData = None
 
+    def tag2name(dcm: Dataset, tag: str) -> str:
+        name = dcm[tag].name.replace("[", "").replace("]", "")
+        name = "".join(char.capitalize() for char in name.split(" "))
+        return name
+
+    def dict2nameddict(dcm: Dataset, seq_dict: Dict[str, dict]):
+        for key, value in seq_dict.items():
+            value["Name"] = tag2name(dcm, key)
+            if value["vr"] == "SQ" and len(value["Value"]):
+                value["Value"][0] = dict2nameddict(dcm[key][0], value["Value"][0])
+        return seq_dict
+
     dcm_dict = dcm.to_json_dict()
     for key, value in dcm_dict.items():
-        tag_name = dcm[key].name.replace("[", "").replace("]", "")
-        tag_name = "".join(char.capitalize() for char in tag_name.split(" "))
-        value["Name"] = tag_name
-
+        value["Name"] = tag2name(dcm, key)
+        if value["vr"] == "SQ" and len(value["Value"]):
+            value["Value"][0] = dict2nameddict(dcm[key][0], value["Value"][0])
     return dcm_dict
 
 
