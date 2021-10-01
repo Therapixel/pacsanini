@@ -167,6 +167,11 @@ def test_dcm2dict(dicom_path: str, dicom: Dataset):
     """
     dcm_dict = convert.dcm2dict(dicom_path)
     assert isinstance(dcm_dict, dict)
+    for value in dcm_dict.values():
+        assert "Name" in value
+        if value["vr"] == "SQ" and value["Value"]:
+            for seq_value in value["Value"][0].values():
+                assert "Name" in seq_value
 
     dcm = convert.dict2dcm(dcm_dict)
     assert isinstance(dcm, Dataset)
