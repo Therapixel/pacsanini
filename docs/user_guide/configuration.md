@@ -47,6 +47,11 @@ Configuration files can be in `YAML` or `JSON` format.
           callback: str
         - tag_name: StudyInstanceUID
         - tag_name: SOPInstanceUID
+    email:
+        username: jdoe@example.com
+        password: changeme
+        host: example.smtp.com
+        port: 465
     ```
 
 === "JSON"
@@ -101,7 +106,13 @@ Configuration files can be in `YAML` or `JSON` format.
             {
                 "tag_name": "SOPInstanceUID"
             }
-        ]
+        ],
+        "email": {
+            "username": "jdoe@example.com",
+            "password": "changeme",
+            "host": "example.smtp.com",
+            "port": 465
+        }
     }
     ```
 
@@ -354,3 +365,43 @@ default value to be returned other than None, specify the `default_val` paramete
 To apply formatting to parsed DICOM tag values, you can specify a data type or
 a function (which must be available in your PYTHONPATH). When specifying a
 custom function, the string must be in the following format: `<module>.<submodule>:<function>`.
+
+
+### email configuration
+
+=== "YAML"
+
+    ``` yaml
+    email:
+        username: jdoe@example.com
+        password: changeme
+        host: example.smtp.com
+        port: 465
+    ```
+
+=== "JSON"
+
+    ``` json
+    {
+        "email": {
+            "username": "jdoe@example.com",
+            "password": "changeme",
+            "host": "example.smtp.com",
+            "port": 465
+        }
+    }
+    ```
+
+The `email` configuration section is only used when running a complete
+data [collection pipeline](./tutorials/pipeline.md) from the command line.
+Even then, it is purely optional.
+
+By specifying email settings, emails can be sent to an address
+that summarize the task's state.
+
+Emails will only be sent if the `username` and `password` fields are set.
+By default, the `host` parameter is set to `smtp.gmail.com` and the `port`
+is set to 465.
+
+Do read [Google's documentation](https://support.google.com/accounts/answer/6010255?hl=en)
+on authorizing less secure apps to connect to your account if you are using gmail.

@@ -5,7 +5,8 @@
 """The orchestra pipeline provides access to an all inclusive method
 for finding, moving, and parsing DICOM resources.
 """
-from prefect import Flow, Parameter, case
+
+from prefect import Flow, Parameter, case, context
 from prefect.engine.state import State
 
 from pacsanini.config import PacsaniniConfig
@@ -64,6 +65,8 @@ def run_pacsanini_pipeline(
         raise InvalidConfigError("Missing move configuration.")
     if not config_.can_parse() and not is_db_uri(config_.storage.resources):
         raise InvalidConfigError("Missing parse configuration.")
+
+    context["pacsanini_config"] = config_
 
     with Flow("My First Flow") as flow:
         config_path_param = Parameter("config_path_param")

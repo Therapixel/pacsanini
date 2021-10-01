@@ -24,6 +24,27 @@ DEFAULT_SETTINGS_PATH = os.path.join(os.path.expanduser("~"), "pacsaninirc.yaml"
 SETTINGS_PATH = os.environ.get("PACSANINI_CONFIG", DEFAULT_SETTINGS_PATH)
 
 
+class EmailConfig(BaseModel):
+    """A class to store email configuration settings.
+
+    Attributes
+    ----------
+    username : Optional[str]
+        The email account's name.
+    password : Optional[str]
+        The email account's password.
+    host : Optional[str]
+        The email server host.
+    port : Optional[int]
+        The port to send the email to.
+    """
+
+    username: Optional[str] = ""
+    password: Optional[str] = ""
+    host: Optional[str] = "smtp.gmail.com"
+    port: Optional[int] = 465
+
+
 class MoveConfig(BaseModel):
     """The MoveConfig class represents the possible settings that
     are used when querying for data.
@@ -255,6 +276,8 @@ class PacsaniniConfig(BaseModel):
         The application's storage configuration.
     tags : Optional[List[DicomTag]]
         The application's DICOM tags parsing configuration.
+    email : Optional[EmailConfig]
+        The application's email settings.
     """
 
     find: Optional[FindConfig] = None
@@ -262,6 +285,7 @@ class PacsaniniConfig(BaseModel):
     net: Optional[NetConfig] = None
     storage: Optional[StorageConfig] = None
     tags: Optional[List[DicomTag]] = None
+    email: Optional[EmailConfig] = EmailConfig()
 
     @classmethod
     def from_json(cls, path: str):

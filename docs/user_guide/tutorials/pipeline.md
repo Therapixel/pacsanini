@@ -130,3 +130,10 @@ If you are expecting large quantities of DICOM data, you may want to speed up th
 ```bash
 pacsanini orchestrate -f pacsanini_conf.yaml --threads 5
 ```
+
+
+## Using notifications
+
+The data collection pipeline can be a long running process. To get notified when
+a particular task is done, see the [email configuration](../configuration.md#email-configuration)
+section on how to setup email notifications
