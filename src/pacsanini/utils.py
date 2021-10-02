@@ -11,6 +11,7 @@ from typing import List
 
 import pandas as pd
 
+from pacsanini.config import SETTINGS_PATH
 from pacsanini.errors import InvalidResourceFile
 from pacsanini.models import QueryLevel
 
@@ -78,3 +79,10 @@ def is_db_uri(uri: str) -> bool:
         if dialect.match(uri_lower):
             return True
     return False
+
+
+def default_config_path() -> str:
+    """Returns the default configuration path set by an environment
+    variable or by using the default/hard-coded path.
+    """
+    return SETTINGS_PATH
