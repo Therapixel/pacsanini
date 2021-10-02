@@ -8,7 +8,7 @@ from pydicom import FileDataset
 from sqlalchemy.orm import Session
 
 from pacsanini.db import crud
-from pacsanini.db.models import Images, StudyFind
+from pacsanini.db.models import Image, StudyFind
 
 
 @pytest.fixture
@@ -44,15 +44,15 @@ def add_studies_to_find(sqlite_session: Session):
 def test_add_image(dicom: FileDataset, sqlite_session: Session):
     """Test that adding an image to the database works well."""
     image1 = crud.add_image(sqlite_session, dicom)
-    assert isinstance(image1, Images)
+    assert isinstance(image1, Image)
     assert image1.image_uid == dicom.SOPInstanceUID
 
-    assert len(sqlite_session.query(Images).all()) == 1
+    assert len(sqlite_session.query(Image).all()) == 1
 
     image2 = crud.add_image(sqlite_session, dicom)
     assert image2 is None
 
-    assert len(sqlite_session.query(Images).all()) == 1
+    assert len(sqlite_session.query(Image).all()) == 1
 
 
 @pytest.mark.db

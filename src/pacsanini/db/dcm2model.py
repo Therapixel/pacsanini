@@ -10,26 +10,26 @@ from typing import Tuple, Union
 from pydicom import Dataset, dcmread
 
 from pacsanini.convert import agestr2years, dcm2dict, str2datetime
-from pacsanini.db.models import Images, Patients, Series, Studies, StudyFind
+from pacsanini.db.models import Image, Patient, Series, Study, StudyFind
 from pacsanini.parse import DicomTagGroup
 
 
-def dcm2patient(dcm: Dataset, institution: str = None) -> Patients:
-    """Convert a DICOM file to a Patients instance that can be inserted
+def dcm2patient(dcm: Dataset, institution: str = None) -> Patient:
+    """Convert a DICOM file to a Patient instance that can be inserted
     in the database.
 
     Parameters
     ----------
     dcm : Dataset
-        The DICOM data to convert to a Patients instance.
+        The DICOM data to convert to a Patient instance.
     institution : str
-        If set, add a specified institution name to the Patients
+        If set, add a specified institution name to the Patient
         model. The default is None.
 
     Returns
     -------
-    Patients
-        The Patients model.
+    Patient
+        The Patient model.
     """
     tag_grp = DicomTagGroup(
         tags=[
@@ -44,22 +44,22 @@ def dcm2patient(dcm: Dataset, institution: str = None) -> Patients:
     )
     data = tag_grp.parse_dicom(dcm)
     data["institution"] = institution
-    return Patients(**data)
+    return Patient(**data)
 
 
-def dcm2study(dcm: Dataset) -> Studies:
-    """Convert a DICOM file to a Studies instance that can be inserted
+def dcm2study(dcm: Dataset) -> Study:
+    """Convert a DICOM file to a Study instance that can be inserted
     in the database.
 
     Parameters
     ----------
     dcm : Dataset
-        The DICOM data to convert to a Patients instance.
+        The DICOM data to convert to a Study instance.
 
     Returns
     -------
-    Studies
-        The Studies model.
+    Study
+        The Study model.
     """
     tag_grp = DicomTagGroup(
         tags=[
@@ -79,7 +79,7 @@ def dcm2study(dcm: Dataset) -> Studies:
         ]
     )
     data = tag_grp.parse_dicom(dcm)
-    return Studies(**data)
+    return Study(**data)
 
 
 def dcm2study_finding(dcm: Dataset) -> StudyFind:
@@ -89,7 +89,7 @@ def dcm2study_finding(dcm: Dataset) -> StudyFind:
     Parameters
     ----------
     dcm : Dataset
-        The DICOM data to convert to a Patients instance.
+        The DICOM data to convert to a StudyFind instance.
 
     Returns
     -------
@@ -120,7 +120,7 @@ def dcm2series(dcm: Dataset) -> Series:
     Parameters
     ----------
     dcm : Dataset
-        The DICOM data to convert to a Patients instance.
+        The DICOM data to convert to a Series instance.
 
     Returns
     -------
@@ -137,16 +137,16 @@ def dcm2series(dcm: Dataset) -> Series:
     return Series(**data)
 
 
-def dcm2image(dcm: Dataset, institution: str = None, filepath: str = None) -> Images:
-    """Convert a DICOM file to a Patients instance that can be inserted
+def dcm2image(dcm: Dataset, institution: str = None, filepath: str = None) -> Image:
+    """Convert a DICOM file to a Image instance that can be inserted
     in the database.
 
     Parameters
     ----------
     dcm : Dataset
-        The DICOM data to convert to a Patients instance.
+        The DICOM data to convert to a Image instance.
     institution : str
-        If set, add a specified institution name to the Patients
+        If set, add a specified institution name to the Image
         model. The default is None.
     filepath : str
         If set, add the DICOM's filepath to the database. The default
@@ -154,8 +154,8 @@ def dcm2image(dcm: Dataset, institution: str = None, filepath: str = None) -> Im
 
     Returns
     -------
-    Images
-        The Images model.
+    Image
+        The Image model.
     """
     tag_grp = DicomTagGroup(
         tags=[
@@ -182,21 +182,21 @@ def dcm2image(dcm: Dataset, institution: str = None, filepath: str = None) -> Im
     data["meta"] = dcm2dict(dcm, include_pixels=False)
     data["institution"] = institution
     data["filepath"] = filepath
-    return Images(**data)
+    return Image(**data)
 
 
 def dcm2dbmodels(
     dcm: Union[str, Dataset], institution: str = None, filepath: str = None
-) -> Tuple[Patients, Studies, Series, Images]:
+) -> Tuple[Patient, Study, Series, Image]:
     """Convert a DICOM file into the different database models that will be used
     to insert the DICOM data into the database.
 
     Parameters
     ----------
     dcm : Union[str, Dataset]
-        The DICOM data to convert to a Patients instance.
+        The DICOM data to convert to a Patient, Study, Series, and Image instance.
     institution : str
-        If set, add a specified institution name to the Patients
+        If set, add a specified institution name to the Patient
         model. The default is None.
     filepath : str
         If set, add the DICOM's filepath to the database. The default
@@ -205,7 +205,7 @@ def dcm2dbmodels(
 
     Returns
     -------
-    Tuple[Patients, Studies, Series, Images]
+    Tuple[Patient, Study, Series, Image]
         A 4-tuple corresponding to the image's
     """
     if isinstance(dcm, str):
