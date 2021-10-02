@@ -35,7 +35,7 @@ include_trailing_comma = true
 
 [tool.poetry]
 name = "pacsanini"
-version = "0.1.1"
+version = "0.2.0"
 description = "A package for DICOM utilities."
 license = "Apache 2.0"
 authors = ["Aurélien Chick <achick@therapixel.com>"]

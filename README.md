@@ -69,7 +69,7 @@ poetry install --no-root
 A docker image can be built locally to run `pacsanini` within an isolated environment.
 
 ```bash
-docker image build -t latest .
+docker image build -t pacsanini:latest .
 docker run pacsanini --help
 ```
 
@@ -78,19 +78,3 @@ docker run pacsanini --help
 The following topics are the main areas where `pacsanini` can improve as a library and a tool.
 Of course, these topics are up for discussion and such discussions are encouraged in the
 [GitHub issues](https://github.com/Therapixel/pacsanini/issues) section.
-
-### Data Collection
-
-* 🚧 Make the single-command pipeline more mature.
-  * Add a feature to send notifications when a step is done
-
-* 🚧 Use sql storage as an alternative to CSV storage.
-
-* 🚧 Improve error handling for C-MOVE operations.
-
-* 🚧 Implement the ability for event handling when DICOM files are received by the storescp server.
-
-### Testing
-
-* 🚧 Find a good way to test DICOM network messaging applications. Possibly with the
-  `dcmtk` suite, the apps from `pynetdicom` or even a Docker container with a PACS?

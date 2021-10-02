@@ -6,7 +6,7 @@
 # GitHub stuff
 .github/
 
-# Environment/configurtion files
+# Environment/configuration files
 .vscode/
 .DS_Store
 .env

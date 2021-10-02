@@ -3,4 +3,4 @@
 # This file is subject to the terms and conditions described in the
 # LICENSE file distributed in this package.
 """Increment when a new version is ready."""
-__version__ = "0.1.1"
+__version__ = "0.2.0"
