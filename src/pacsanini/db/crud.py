@@ -17,7 +17,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from pacsanini.db.dcm2model import dcm2dbmodels, dcm2study_finding
-from pacsanini.db.models import Base, Images, Patients, Series, Studies, StudyFind
+from pacsanini.db.models import Base, Image, Patient, Series, Study, StudyFind
 
 
 def add_found_study(session: Session, dcm: Dataset) -> Optional[StudyFind]:
@@ -48,7 +48,7 @@ def add_image(
     dcm: Union[str, Dataset],
     institution: str = None,
     filepath: str = None,
-) -> Optional[Images]:
+) -> Optional[Image]:
     """Insert an image to the database. If the image belongs to a new patient, study, or
     series, the relevant tables will also be updated. If the image already exists in the
     database (based on the SOPInstanceUID), the transaction will be rolled back.
@@ -66,8 +66,8 @@ def add_image(
 
     Returns
     -------
-    Images
-        The inserted Images object. If the insert was unsuccessfull, None
+    Image
+        The inserted Image object. If the insert was unsuccessfull, None
         is returned.
     """
     pat, study, series, image = dcm2dbmodels(
@@ -81,8 +81,8 @@ def add_image(
     except exc.IntegrityError:
         session.rollback()
         pat_dbid = (
-            session.query(Patients.id)
-            .filter(Patients.patient_id == pat.patient_id)
+            session.query(Patient.id)
+            .filter(Patient.patient_id == pat.patient_id)
             .first()[0]
         )
 
@@ -94,8 +94,8 @@ def add_image(
     except exc.IntegrityError:
         session.rollback()
         study_dbid = (
-            session.query(Studies.id)
-            .filter(Studies.study_uid == study.study_uid)
+            session.query(Study.id)
+            .filter(Study.study_uid == study.study_uid)
             .first()[0]
         )
 

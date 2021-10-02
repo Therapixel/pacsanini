@@ -13,7 +13,7 @@ from pydicom import FileDataset
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from pacsanini.db.models import Images
+from pacsanini.db.models import Image
 from pacsanini.db.parser import parse_dir2sql
 
 
@@ -28,7 +28,7 @@ def test_parse_sql2db(data_dir: str, sqlite_db_path: str, dicom: FileDataset):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    results: List[Images] = session.query(Images).all()
+    results: List[Image] = session.query(Image).all()
     assert len(results) > 1
     for result in results:
         assert os.path.exists(result.filepath)
@@ -40,8 +40,8 @@ def test_parse_sql2db(data_dir: str, sqlite_db_path: str, dicom: FileDataset):
 
     assert len(results) == file_count
 
-    res: Images = (
-        session.query(Images).filter(Images.image_uid == dicom.SOPInstanceUID).first()
+    res: Image = (
+        session.query(Image).filter(Image.image_uid == dicom.SOPInstanceUID).first()
     )
     assert res
 

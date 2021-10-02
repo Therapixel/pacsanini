@@ -66,13 +66,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from pacsanini.config import PacsaniniConfig
-from pacsanini.db import Images
+from pacsanini.db import Image
 
 config = PacsaniniConfig.from_yaml("pacsanini_conf.yaml")
 engine = create_engine(config.storage.resources)
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-for image in session.query(Images).all():
+for image in session.query(Image).all():
     print(image)
 ```

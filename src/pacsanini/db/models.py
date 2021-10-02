@@ -31,7 +31,7 @@ class StudyFind(Base):
     retrieved_on = Column(DateTime, default=None)
     found_on = Column(DateTime, default=datetime.utcnow)
 
-    study: "Studies" = relationship("Studies", back_populates="study_find")
+    study: "Study" = relationship("Study", back_populates="study_find")
 
     def __repr__(self):
         study_date = self.study_date.strftime("%Y%m%d")
@@ -49,7 +49,7 @@ class StudyFind(Base):
         ]
 
 
-class Patients(Base):
+class Patient(Base):
     """Table corresponding to patient-level data found in
     DICOM files.
     """
@@ -66,7 +66,7 @@ class Patients(Base):
         return f"<Patient: {self.patient_id}>"
 
 
-class Studies(Base):
+class Study(Base):
     """Table corresponding to study-level data found in
     DICOM files.
     """
@@ -103,7 +103,7 @@ class Series(Base):
         return f"<Series: {self.series_uid}"
 
 
-class Images(Base):
+class Image(Base):
     """Table corresponding to the studies that were queried and
     retrieved from the PACS.
     """

@@ -12,7 +12,7 @@ from pydicom.dataset import Dataset
 
 from pacsanini.convert import datetime2str
 from pacsanini.db.dcm2model import dcm2dbmodels, dcm2study_finding
-from pacsanini.db.models import Images, Patients, Series, Studies, StudyFind
+from pacsanini.db.models import Image, Patient, Series, Study, StudyFind
 
 
 @pytest.mark.db
@@ -22,10 +22,10 @@ def test_dcm2dbmodels(dicom_path: str, dicom: FileDataset):
     """
     patient, study, series, image = dcm2dbmodels(dicom_path)
 
-    assert isinstance(patient, Patients)
-    assert isinstance(study, Studies)
+    assert isinstance(patient, Patient)
+    assert isinstance(study, Study)
     assert isinstance(series, Series)
-    assert isinstance(image, Images)
+    assert isinstance(image, Image)
 
     assert patient.patient_id == dicom.PatientID
 

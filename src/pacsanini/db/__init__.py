@@ -13,6 +13,6 @@ from pacsanini.db.crud import (
     get_study_uids_to_move,
     update_retrieved_study,
 )
-from pacsanini.db.models import Base, Images, Patients, Series, Studies, StudyFind
+from pacsanini.db.models import Base, Image, Patient, Series, Study, StudyFind
 from pacsanini.db.parser import parse_dir2sql
 from pacsanini.db.utils import get_db_session

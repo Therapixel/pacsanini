@@ -8,7 +8,7 @@ import os
 import pytest
 
 from pacsanini.config import PacsaniniConfig
-from pacsanini.db import Images, utils
+from pacsanini.db import Image, utils
 from pacsanini.pipeline import run_pacsanini_pipeline
 
 
@@ -26,6 +26,6 @@ def test_run_pacsanini_pipeline(pacsanini_orthanc_config: str):
     assert file_count > 1
 
     with utils.get_db_session(config.storage.resources) as db_session:
-        db_images = db_session.query(Images).all()
+        db_images = db_session.query(Image).all()
         assert len(db_images)
         assert len(db_images) == file_count
