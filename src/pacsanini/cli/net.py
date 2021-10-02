@@ -22,14 +22,17 @@ from pacsanini.net import (
     study_find2csv,
 )
 from pacsanini.net.c_find import patient_find2sql, study_find2sql
-from pacsanini.utils import is_db_uri, read_resources
+from pacsanini.utils import default_config_path, is_db_uri, read_resources
 
 
 @click.command(name="echo")
 @click.option(
     "-f",
     "--config",
+    required=False,
     type=click.Path(exists=True),
+    default=default_config_path(),
+    show_default=True,
     help="The path to the configuration file to use for networking commands.",
 )
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
@@ -51,7 +54,10 @@ def echo_cli(config: str, debug: bool):
 @click.option(
     "-f",
     "--config",
+    required=False,
     type=click.Path(exists=True),
+    default=default_config_path(),
+    show_default=True,
     help="The path to the configuration file to use for networking commands.",
 )
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
@@ -105,7 +111,10 @@ def find_cli(config: str, debug: bool):
 @click.option(
     "-f",
     "--config",
+    required=False,
     type=click.Path(exists=True),
+    default=default_config_path(),
+    show_default=True,
     help="The path to the configuration file to use for networking commands.",
 )
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
@@ -184,7 +193,10 @@ def move_cli(config: str, debug: bool):
 @click.option(
     "-f",
     "--config",
+    required=False,
     type=click.Path(exists=True),
+    default=default_config_path(),
+    show_default=True,
     help="The path to the configuration file to use for networking commands.",
 )
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")

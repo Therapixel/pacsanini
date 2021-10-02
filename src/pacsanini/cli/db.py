@@ -16,14 +16,17 @@ from pacsanini.db.utils import (
     get_db_session,
     initialize_database,
 )
+from pacsanini.utils import default_config_path
 
 
 @click.command(name="init")
 @click.option(
     "-f",
     "--config",
-    required=True,
+    required=False,
     type=click.Path(exists=True),
+    default=default_config_path(),
+    show_default=True,
     help="The path to the configuration file to use for initializing the database.",
 )
 @click.option(
@@ -50,8 +53,10 @@ def init_cli(config: str, force_init: bool):
 @click.option(
     "-f",
     "--config",
-    required=True,
+    required=False,
     type=click.Path(exists=True),
+    default=default_config_path(),
+    show_default=True,
     help="The path to the configuration file to use for dumping the database.",
 )
 @click.option(

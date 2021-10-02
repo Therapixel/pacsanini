@@ -6,13 +6,17 @@
 import click
 
 from pacsanini.pipeline import run_pacsanini_pipeline
+from pacsanini.utils import default_config_path
 
 
 @click.command(name="orchestrate")
 @click.option(
     "-f",
     "--config",
+    required=False,
     type=click.Path(exists=True),
+    default=default_config_path(),
+    show_default=True,
     help="The path to the configuration file to use for networking commands.",
 )
 @click.option(

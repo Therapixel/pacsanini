@@ -14,6 +14,7 @@ import yaml
 from pacsanini.config import PacsaniniConfig
 from pacsanini.convert import datetime2str
 from pacsanini.parse import DicomTag
+from pacsanini.utils import default_config_path
 
 
 def _datetime_encoder(val):
@@ -23,7 +24,7 @@ def _datetime_encoder(val):
 
 
 @click.command("config")
-@click.argument("conf", required=False)
+@click.argument("conf", required=False, default=default_config_path())
 @click.option(
     "--fmt",
     type=click.Choice(["json", "yaml"]),
@@ -39,7 +40,8 @@ def _datetime_encoder(val):
 def config_cli(conf: str, fmt: str, edit: bool):
     """Generate a default configuration file to the specified
     output file CONF. If unset, the configuration will be written
-    to the standard output.
+    to the default configuration file path (PACSANINI_CONFIG or
+    ~/pacsaninirc.yaml)
     """
     if edit:  # pragma: no cover
         if not conf or not os.path.exists(conf):
@@ -93,15 +95,9 @@ def config_cli(conf: str, fmt: str, edit: bool):
     for node in config_dict["net"].values():
         node["aetitle"] = node["aetitle"].decode()
 
-    if conf:
-        if fmt == "json":
-            with open(conf, "w") as out:
-                json.dump(config_dict, out, indent=4, default=_datetime_encoder)
-        else:
-            with open(conf, "w") as out:
-                yaml.safe_dump(config_dict, out)
+    if fmt == "json":
+        with open(conf, "w") as out:
+            json.dump(config_dict, out, indent=4, default=_datetime_encoder)
     else:
-        if fmt == "json":
-            click.echo(json.dumps(config_dict, indent=4, default=_datetime_encoder))
-        else:
-            click.echo(yaml.safe_dump(config_dict))
+        with open(conf, "w") as out:
+            yaml.safe_dump(config_dict, out)

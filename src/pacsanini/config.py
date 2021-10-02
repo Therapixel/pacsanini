@@ -21,7 +21,8 @@ from pacsanini.parse import DicomTag, DicomTagGroup
 
 
 DEFAULT_SETTINGS_PATH = os.path.join(os.path.expanduser("~"), "pacsaninirc.yaml")
-SETTINGS_PATH = os.environ.get("PACSANINI_CONFIG", DEFAULT_SETTINGS_PATH)
+PACSANINI_CONF_ENVVAR = "PACSANINI_CONFIG"
+SETTINGS_PATH = os.environ.get(PACSANINI_CONF_ENVVAR, DEFAULT_SETTINGS_PATH)
 
 
 class EmailConfig(BaseModel):

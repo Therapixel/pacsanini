@@ -18,26 +18,6 @@ from pacsanini.config import PacsaniniConfig
 
 
 @pytest.mark.cli
-def test_config_stdout():
-    """Test that the config generation works when outputing to stdout."""
-    runner = CliRunner()
-
-    result_yaml = runner.invoke(config_cli, ["--fmt", "yaml"])
-    assert result_yaml.exit_code == 0
-    assert result_yaml.output
-
-    result_json = runner.invoke(config_cli, ["--fmt", "json"])
-    assert result_json.exit_code == 0
-    assert result_json.output
-
-    yaml_conf_dict = yaml.safe_load(result_yaml.output)
-    assert PacsaniniConfig(**yaml_conf_dict)
-
-    json_conf_dict = json.loads(result_json.output)
-    assert PacsaniniConfig(**json_conf_dict)
-
-
-@pytest.mark.cli
 def test_config_file(tmpdir):
     """Test that the parsing commands functions correctly."""
     runner = CliRunner()

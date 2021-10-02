@@ -18,6 +18,7 @@ from pacsanini.config import PacsaniniConfig
 from pacsanini.db import parse_dir2sql
 from pacsanini.errors import ConfigFormatError
 from pacsanini.io import parse_dir2csv, parse_dir2json
+from pacsanini.utils import default_config_path
 
 
 @command(name="parse", cls=GroupCommand)
@@ -35,8 +36,10 @@ from pacsanini.io import parse_dir2csv, parse_dir2json
     "-f",
     "--config",
     cls=GroupOption,
-    required=True,
-    type=Path(exists=True, file_okay=True, resolve_path=True),
+    required=False,
+    type=Path(exists=True),
+    default=default_config_path(),
+    show_default=True,
     help_group="Input Options",
     help="The DICOM tags configuration file to use.",
 )

@@ -1,5 +1,10 @@
 # CLI Reference
 
+!!! note
+    This regards all pacsanini sub-commands that have an optional `-f/--config` option.
+    If unset, `pacsanini` will search for a file path specified by the `PACSANINI_CONFIG`
+    environment variable or a file in your home directory named `pacsaninirc.yaml`.
+
 ::: mkdocs-click
     :module: pacsanini.cli
     :command: entry_point
