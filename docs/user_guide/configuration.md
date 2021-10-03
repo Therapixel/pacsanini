@@ -116,16 +116,23 @@ Configuration files can be in `YAML` or `JSON` format.
     }
     ```
 
+### Command configuration
+
 The table below illustrates which configuration sections are required to perform the
-functionalities that pacsanini offers from the command line.
+functionalities that pacsanini offers from the command line. See the [CLI reference](../cli_reference/index.md)
+section for more details on command usage.
 
 | Command | move | net | find | storage | tags |
 | ------- | ---- | --- | ---- | ------- | ---- |
 | config | :material-close: | :material-close: | :material-close: | :material-close: | :material-close: |
+| echo    | :material-close: | :material-check: | :material-close: | :material-close: | :material-close: |
+| find    | :material-close: | :material-check: | :material-check: | :material-check: | :material-close: |
+| move    | :material-check: | :material-check: | :material-close: | :material-check: | :material-close: |
+| orchestrate | :material-check: | :material-check: | :material-check: | :material-check: | :material-check: |
 | parse   | :material-close: | :material-close: | :material-close: | :material-close: | :material-check: |
 | parse-conf | :material-close: | :material-close: | :material-close: | :material-close: | :material-close: |
+| send    | :material-close: | :material-check: | :material-close: | :material-close: | :material-close: |
 | server  | :material-close: | :material-check: | :material-close: | :material-check: | :material-close: |
-| echo    | :material-close: | :material-check: | :material-close: | :material-close: | :material-close: |
 
 ## Setup
 

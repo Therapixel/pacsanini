@@ -16,7 +16,7 @@ build applications with a certain level of abstraction.
 
 ## User Guide
 
-Check out the tutorials and guides to learn how to get around using dcmy [here](user_guide/index.md).
+Check out the tutorials and guides to learn how to get around using `pacsanini` [here](user_guide/index.md).
 
 ## API Reference
 
