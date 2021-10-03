@@ -17,16 +17,10 @@ import pytest
 import requests
 import yaml
 
-from pydicom.uid import (
-    DeflatedExplicitVRLittleEndian,
-    ExplicitVRBigEndian,
-    ExplicitVRLittleEndian,
-    ImplicitVRLittleEndian,
-)
-from pynetdicom import AE, StoragePresentationContexts
 from pytest_docker.plugin import Services
 
 from pacsanini.config import PacsaniniConfig
+from pacsanini.net.c_store import send_dicom
 
 
 @pytest.fixture(scope="session")
@@ -106,26 +100,13 @@ def orthanc_node(
     assert res.status_code == 200
 
     study_dir = os.path.join(data_dir, "dicom-files", dicom.StudyInstanceUID)
-    dicom_paths = []
-    for root, _, files in os.walk(study_dir):
-        for fname in files:
-            dicom_paths.append(os.path.join(root, fname))
-
-    ae = AE(ae_title=orthanc_client_modality["AET"].encode())
-    transfer_syntax = [
-        ExplicitVRLittleEndian,
-        ImplicitVRLittleEndian,
-        DeflatedExplicitVRLittleEndian,
-        ExplicitVRBigEndian,
-    ]
-    for cx in StoragePresentationContexts:
-        ae.add_requested_context(cx.abstract_syntax, transfer_syntax)
-
-    assoc = ae.associate(docker_ip, dicom_port)
-    assert assoc.is_established
-    for path in dicom_paths:
-        dcm = pydicom.dcmread(path, stop_before_pixels=True)
-        assoc.send_c_store(dcm)
+    results = send_dicom(
+        study_dir,
+        src_node={"aetitle": "pacsanini"},
+        dest_node={"aetitle": "TPXORTHANC", "ip": docker_ip, "port": dicom_port},
+    )
+    for res in results:
+        assert res.Status == 0  # type: ignore
 
     return "TPXORTHANC", docker_ip, dicom_port
 

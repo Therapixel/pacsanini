@@ -16,4 +16,5 @@ from pacsanini.net.c_find import (
     study_find2sql,
 )
 from pacsanini.net.c_move import move, move_patients, move_studies
+from pacsanini.net.c_store import send_dicom
 from pacsanini.net.storescp import StoreSCPServer, run_server
