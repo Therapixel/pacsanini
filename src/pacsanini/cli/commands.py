@@ -10,7 +10,7 @@ from click import echo, group, option
 from pacsanini.__version__ import __version__
 from pacsanini.cli.config import config_cli
 from pacsanini.cli.db import db_cli_group
-from pacsanini.cli.net import echo_cli, find_cli, move_cli, server_cli
+from pacsanini.cli.net import echo_cli, find_cli, move_cli, send_cli, server_cli
 from pacsanini.cli.parse import gen_parser, parse
 from pacsanini.cli.pipeline import orchestrate_cli
 
@@ -38,6 +38,7 @@ entry_point.add_command(db_cli_group)
 entry_point.add_command(echo_cli)
 entry_point.add_command(find_cli)
 entry_point.add_command(move_cli)
+entry_point.add_command(send_cli)
 entry_point.add_command(server_cli)
 entry_point.add_command(parse)
 entry_point.add_command(gen_parser)

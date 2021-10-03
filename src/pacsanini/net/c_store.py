@@ -7,7 +7,7 @@ from a local node to a destination node over a C-STORE connection.
 """
 import os
 
-from typing import Generator, Union
+from typing import Generator, Tuple, Union
 
 from pydicom import Dataset, dcmread
 from pydicom.errors import InvalidDicomError
@@ -18,6 +18,7 @@ from pydicom.uid import (
     ImplicitVRLittleEndian,
 )
 from pynetdicom import AE
+from pynetdicom.association import Association
 from pynetdicom.presentation import StoragePresentationContexts
 
 from pacsanini.models import DicomNode
@@ -28,7 +29,7 @@ def send_dicom(
     *,
     src_node: Union[DicomNode, dict],
     dest_node: Union[DicomNode, dict],
-) -> Generator[Dataset, None, None]:
+) -> Generator[Tuple[str, Dataset], None, None]:
     """Send one or multiple DICOM files from the source node
     to the dest node. If the dcm_path is a directory, non-DICOM
     files will be ignored.
@@ -45,8 +46,9 @@ def send_dicom(
 
     Yields
     ------
-    Generator[Dataset, None, None]
-        The status of the C-STORE requests as Dataset instances.
+    Generator[Tuple[str, Dataset], None, None]
+        A 2-tuple corresponding to the DICOM file's path and the
+        associated status of the C-STORE operation as a Dataset.
     """
     if isinstance(src_node, dict):
         src_node = DicomNode(**src_node)
@@ -72,12 +74,16 @@ def send_dicom(
     for ctx in StoragePresentationContexts:
         ae.add_requested_context(ctx.abstract_syntax, transfer_syntax)
 
-    assoc = ae.associate(dest_node.ip, dest_node.port, ae_title=dest_node.aetitle)
-    if assoc.is_established:
-        for path in dcm_files:
-            try:
-                dcm = dcmread(path)
-                yield assoc.send_c_store(dcm)
-            except InvalidDicomError:
-                pass
-    assoc.release()
+    assoc: Association = None
+    try:
+        assoc = ae.associate(dest_node.ip, dest_node.port, ae_title=dest_node.aetitle)
+        if assoc.is_established:
+            for path in dcm_files:
+                try:
+                    dcm = dcmread(path)
+                    yield path, assoc.send_c_store(dcm)
+                except InvalidDicomError:
+                    pass
+    finally:
+        if assoc is not None:
+            assoc.release()

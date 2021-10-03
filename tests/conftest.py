@@ -88,8 +88,8 @@ def orthanc_node(
     """Return the Orthanc instance's address and ensure that it contains the
     data.
     """
-    dicom_port = docker_services.port_for("orthanc", 4242)
-    http_port = docker_services.port_for("orthanc", 8042)
+    dicom_port = docker_services.port_for("orthanc-pacsanini-test", 4242)
+    http_port = docker_services.port_for("orthanc-pacsanini-test", 8042)
 
     orthanc_user = "orthanc123"
     orthanc_pass = "orthanc123"
@@ -105,7 +105,7 @@ def orthanc_node(
         src_node={"aetitle": "pacsanini"},
         dest_node={"aetitle": "TPXORTHANC", "ip": docker_ip, "port": dicom_port},
     )
-    for res in results:
+    for (_, res) in results:
         assert res.Status == 0  # type: ignore
 
     return "TPXORTHANC", docker_ip, dicom_port

@@ -19,6 +19,7 @@ from pacsanini.net import (
     move_studies,
     patient_find2csv,
     run_server,
+    send_dicom,
     study_find2csv,
 )
 from pacsanini.net.c_find import patient_find2sql, study_find2sql
@@ -187,6 +188,40 @@ def move_cli(config: str, debug: bool):
     except exc.SQLAlchemyError:
         db_session.close()
         engine.dispose()
+
+
+@click.command(name="send")
+@click.argument("dcmdir", type=click.Path(exists=True))
+@click.option(
+    "-f",
+    "--config",
+    required=False,
+    type=click.Path(exists=True),
+    default=default_config_path(),
+    show_default=True,
+    help="The path to the configuration file to use for networking commands.",
+)
+@click.option("--debug", is_flag=True, help="If set, print debug messages.")
+def send_cli(dcmdir: str, config: str, debug: bool):
+    """Send a DICOM or a DICOM directory by specifying the DCMDIR argument
+    from your local node to a destination node using C-STORE operations.
+    """
+    ext = config.rsplit(".", 1)[-1].lower()
+    load_func = (
+        PacsaniniConfig.from_json if ext == "json" else PacsaniniConfig.from_yaml
+    )
+    pacsanini_config = load_func(config)
+
+    if debug:
+        debug_logger()
+
+    results = send_dicom(
+        dcmdir,
+        src_node=pacsanini_config.net.local_node,
+        dest_node=pacsanini_config.net.dest_node,
+    )
+    for (path, status) in results:
+        click.echo(f"{path},{'OK' if status.Status == 0 else 'FAILED'}")
 
 
 @click.command(name="server")
