@@ -2,13 +2,13 @@ version: '3.7'
 
 services:
 
-  orthanc:
-    container_name: orthanc
-    hostname: orthanc
+  orthanc-pacsanini-test:
+    container_name: orthanc-pacsanini-test
+    hostname: orthanc-pacsanini-test
     image: jodogne/orthanc:1.9.7
     ports:
-      - "${ORTHANC_PACS_PORT-4242}:4242"
-      - "${ORTHANC_HTTP_PORT-8042}:8042"
+      - "${ORTHANC_PACS_PORT-4244}:4242"
+      - "${ORTHANC_HTTP_PORT-8044}:8042"
     volumes:
       - ./config/orthanc.json:/etc/orthanc/orthanc.json
     environment:
