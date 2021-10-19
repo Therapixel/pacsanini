@@ -399,6 +399,7 @@ def patient_find2sql(
     start_date: datetime,
     end_date: datetime = None,
     modality: str = "",
+    create_tables: bool = False,
 ):
     """Find DICOM resources from the destination DICOM node using the
     specified DICOM criteria. Queries are made using the PATIENT
@@ -423,6 +424,9 @@ def patient_find2sql(
         start_date parameter.
     modality : str
         If set, specify the DICOM modality to get results for.
+    create_tables : bool
+        If True, create the database tables before inserting the first
+        find result. The default is False.
 
     Raises
     ------
@@ -431,7 +435,7 @@ def patient_find2sql(
         have set IP and port values or if the end_date parameter is
         set and is smaller than the start_date parameter.
     """
-    with DBWrapper(conn_uri, create_tables=True) as db:
+    with DBWrapper(conn_uri, create_tables=create_tables) as db:
         results_generator = patient_find(
             local_node,
             called_node,
@@ -452,6 +456,7 @@ def study_find2sql(
     start_date: datetime,
     end_date: datetime = None,
     modality: str = "",
+    create_tables: bool = False,
 ):
     """Find DICOM resources from the destination DICOM node using the
     specified DICOM criteria. Queries are made using the STUDY
@@ -476,6 +481,9 @@ def study_find2sql(
         start_date parameter.
     modality : str
         If set, specify the DICOM modality to get results for.
+    create_tables : bool
+        If True, create the database tables before inserting the first
+        find result. The default is False.
 
     Raises
     ------
@@ -484,7 +492,7 @@ def study_find2sql(
         have set IP and port values or if the end_date parameter is
         set and is smaller than the start_date parameter.
     """
-    with DBWrapper(conn_uri, create_tables=True) as db:
+    with DBWrapper(conn_uri, create_tables=create_tables) as db:
         results_generator = study_find(
             local_node,
             called_node,
