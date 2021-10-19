@@ -28,7 +28,7 @@ build:  ## Build the package, as a tarball and a wheel.
 	poetry build
 
 build-exe:  ## Build the package, as an executable (using pyinstaller). Don't do inside a virtualenv.
-	pyinstaller -n pacsanini src/pacsanini/__main__.py
+	python -O scripts/build-exe.py
 
 clean: clean-build clean-docs clean-tests clean-pyc  ## Clean up all types of project builds.
 
