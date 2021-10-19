@@ -53,6 +53,12 @@ def echo_cli(config: str, debug: bool):
 
 @click.command(name="find")
 @click.option(
+    "--create-tables",
+    is_flag=True,
+    default=False,
+    help="If set, create the database tables before parsing results.",
+)
+@click.option(
     "-f",
     "--config",
     required=False,
@@ -62,7 +68,7 @@ def echo_cli(config: str, debug: bool):
     help="The path to the configuration file to use for networking commands.",
 )
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
-def find_cli(config: str, debug: bool):
+def find_cli(create_tables: bool, config: str, debug: bool):
     """Emit C-FIND requests to the called node as specified by
     the config file. Results will be written to the output file
     specified by the "resources" setting in the configuration file.
@@ -90,6 +96,7 @@ def find_cli(config: str, debug: bool):
             start_date=pacsanini_config.find.start_date,
             end_date=pacsanini_config.find.end_date,
             modality=pacsanini_config.find.modality,
+            create_tables=create_tables,
         )
     else:
         find_func_csv = (

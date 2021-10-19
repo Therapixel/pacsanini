@@ -22,7 +22,11 @@ def _inner_sql(result: dict, db_wrapper: DBWrapper, institution_name: str):
 
 
 def parse_dir2sql(
-    src: str, conn_uri: str, institution_name: str = None, nb_threads: int = 1
+    src: str,
+    conn_uri: str,
+    institution_name: str = None,
+    nb_threads: int = 1,
+    create_tables: bool = False,
 ):
     """Parse a DICOM directory and persist the found results in the database
     specified by the conn_uri parameter.
@@ -45,11 +49,14 @@ def parse_dir2sql(
         date in the YYYYMMDD format.
     nb_threads : int
         The number of threads to use. This defaults to 1.
+    create_tables : bool
+        If True, create the database tables before inserting the first
+        parser result. The default is False.
     """
     if institution_name is None:
         institution_name = f"unknown_{datetime.now().strftime('%Y%m%d')}"
 
-    with DBWrapper(conn_uri, create_tables=True, debug=True) as wrapper:
+    with DBWrapper(conn_uri, create_tables=create_tables, debug=True) as wrapper:
         parse_dir(
             src,
             None,

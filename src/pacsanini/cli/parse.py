@@ -100,6 +100,15 @@ from pacsanini.utils import default_config_path
     help_group="Runtime options",
     help="The number of threads to use.",
 )
+@option(
+    "--create-tables",
+    is_flag=True,
+    default=False,
+    help=(
+        "If set, create the database tables before parsing results."
+        " (only used if --fmt is set to sql)."
+    ),
+)
 def parse(
     src: str,
     config: str,
@@ -109,6 +118,7 @@ def parse(
     institution_name: str,
     mode: str,
     threads: int,
+    create_tables: bool,
 ):
     """Parse DICOM tags using the tags configuration file for the specified
     DICOM files and write the results to the output destination. Configuration
@@ -152,6 +162,7 @@ def parse(
             p_config.storage.resources,
             institution_name=institution_name,
             nb_threads=threads,
+            create_tables=create_tables,
         )
 
 

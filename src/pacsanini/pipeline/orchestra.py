@@ -80,6 +80,7 @@ def run_pacsanini_pipeline(
             creation_task = create_database_and_tables(config)
             flow.add_task(creation_task)
 
+        find_dicom_resources.skip_on_upstream_skip = False
         find_task = find_dicom_resources(config, upstream_tasks=[creation_task])
         move_taks = move_dicom_resources(config, upstream_tasks=[find_task])
 
