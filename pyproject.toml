@@ -220,6 +220,7 @@ minversion = "6.0"
 testpaths = ["tests"]
 filterwarnings = [
   'ignore:Starting in pydicom 3.0, Dataset.file_meta must be a FileMetaDataset class instance',
+  "ignore:Using 'method_whitelist' with Retry is deprecated and will be removed in v2.0."
 ]
 
 [build-system]

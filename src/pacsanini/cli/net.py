@@ -9,7 +9,7 @@ from pynetdicom import debug_logger
 from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import sessionmaker
 
-from pacsanini.cli.base import GroupCommand
+from pacsanini.cli.base import GroupCommand, config_option
 from pacsanini.config import PacsaniniConfig
 from pacsanini.db.crud import get_study_uids_to_move
 from pacsanini.models import QueryLevel
@@ -23,19 +23,11 @@ from pacsanini.net import (
     study_find2csv,
 )
 from pacsanini.net.c_find import patient_find2sql, study_find2sql
-from pacsanini.utils import default_config_path, is_db_uri, read_resources
+from pacsanini.utils import is_db_uri, read_resources
 
 
 @click.command(name="echo")
-@click.option(
-    "-f",
-    "--config",
-    required=False,
-    type=click.Path(exists=True),
-    default=default_config_path(),
-    show_default=True,
-    help="The path to the configuration file to use for networking commands.",
-)
+@config_option
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
 def echo_cli(config: str, debug: bool):
     """Test your connection with an another DICOM node over a network."""
@@ -52,23 +44,15 @@ def echo_cli(config: str, debug: bool):
 
 
 @click.command(name="find")
+@config_option
 @click.option(
     "--create-tables",
     is_flag=True,
     default=False,
     help="If set, create the database tables before parsing results.",
 )
-@click.option(
-    "-f",
-    "--config",
-    required=False,
-    type=click.Path(exists=True),
-    default=default_config_path(),
-    show_default=True,
-    help="The path to the configuration file to use for networking commands.",
-)
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
-def find_cli(create_tables: bool, config: str, debug: bool):
+def find_cli(config: str, create_tables: bool, debug: bool):
     """Emit C-FIND requests to the called node as specified by
     the config file. Results will be written to the output file
     specified by the "resources" setting in the configuration file.
@@ -116,15 +100,7 @@ def find_cli(create_tables: bool, config: str, debug: bool):
 
 
 @click.command(name="move", cls=GroupCommand)
-@click.option(
-    "-f",
-    "--config",
-    required=False,
-    type=click.Path(exists=True),
-    default=default_config_path(),
-    show_default=True,
-    help="The path to the configuration file to use for networking commands.",
-)
+@config_option
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
 def move_cli(config: str, debug: bool):
     """Move the DICOM resources specified by the resources parameter in the
@@ -199,15 +175,7 @@ def move_cli(config: str, debug: bool):
 
 @click.command(name="send")
 @click.argument("dcmdir", type=click.Path(exists=True))
-@click.option(
-    "-f",
-    "--config",
-    required=False,
-    type=click.Path(exists=True),
-    default=default_config_path(),
-    show_default=True,
-    help="The path to the configuration file to use for networking commands.",
-)
+@config_option
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
 def send_cli(dcmdir: str, config: str, debug: bool):
     """Send a DICOM or a DICOM directory by specifying the DCMDIR argument
@@ -232,15 +200,7 @@ def send_cli(dcmdir: str, config: str, debug: bool):
 
 
 @click.command(name="server")
-@click.option(
-    "-f",
-    "--config",
-    required=False,
-    type=click.Path(exists=True),
-    default=default_config_path(),
-    show_default=True,
-    help="The path to the configuration file to use for networking commands.",
-)
+@config_option
 @click.option("--debug", is_flag=True, help="If set, print debug messages.")
 def server_cli(config: str, debug: bool):
     """Start a DICOM storescp server in the current process."""

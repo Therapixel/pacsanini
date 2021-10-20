@@ -20,9 +20,9 @@ from pacsanini.models import DicomNode, QueryLevel, StorageSortKey
 from pacsanini.parse import DicomTag, DicomTagGroup
 
 
-DEFAULT_SETTINGS_PATH = os.path.join(os.path.expanduser("~"), "pacsaninirc.yaml")
+DEFAULT_CONFIG_NAME = "pacsaninirc.yaml"
+DEFAULT_SETTINGS_PATH = os.path.join(os.path.expanduser("~"), DEFAULT_CONFIG_NAME)
 PACSANINI_CONF_ENVVAR = "PACSANINI_CONFIG"
-SETTINGS_PATH = os.environ.get(PACSANINI_CONF_ENVVAR, DEFAULT_SETTINGS_PATH)
 
 
 class EmailConfig(BaseModel):

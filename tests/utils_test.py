@@ -1,10 +1,20 @@
+# Copyright (C) 2019-2020, Therapixel SA.
+# All rights reserved.
+# This file is subject to the terms and conditions described in the
+# LICENSE file distributed in this package.
 """Test that resource files can correctly be read
 if they have the good columns.
 """
+import os
+
+from unittest.mock import patch
+
 import pandas as pd
 import pytest
 
-from pacsanini import utils
+from click.testing import CliRunner
+
+from pacsanini import config, utils
 from pacsanini.errors import InvalidResourceFile
 from pacsanini.models import QueryLevel
 
@@ -54,3 +64,39 @@ def test_is_db_uri():
     non_db_uris = ["/data/foo/bar.json", "sqlite.csv"]
     for uri in non_db_uris:
         assert utils.is_db_uri(uri) is False
+
+
+@pytest.mark.utils
+def test_default_config_path():
+    """Test that the correct configuration file is returned when multiple
+    options are available. The order should be: env var, current dir,
+    home dir, None.
+    """
+    runner = CliRunner()
+
+    mock_homedir_file = "homedir.yaml"
+    mock_currentdir_file = "pacsaninirc.yaml"
+    mock_envvar_file = "envvar.yaml"
+
+    def touch(path):
+        with open(path, "w") as f:
+            f.write("")
+
+    with runner.isolated_filesystem():
+        with patch("pacsanini.utils.DEFAULT_SETTINGS_PATH", mock_homedir_file):
+            os.environ[config.PACSANINI_CONF_ENVVAR] = mock_envvar_file
+            touch(mock_homedir_file)
+            touch(mock_currentdir_file)
+            touch(mock_envvar_file)
+
+            assert utils.default_config_path() == mock_envvar_file
+            del os.environ[config.PACSANINI_CONF_ENVVAR]
+            os.remove(mock_envvar_file)
+
+            assert utils.default_config_path() == mock_currentdir_file
+            os.remove(mock_currentdir_file)
+
+            assert utils.default_config_path() == mock_homedir_file
+            os.remove(mock_homedir_file)
+
+            assert utils.default_config_path() is None
