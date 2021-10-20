@@ -5,13 +5,18 @@
 """Simple utilities to facilitate the ingestion of resource values
 into the application.
 """
+import os
 import re
 
-from typing import List
+from typing import List, Optional
 
 import pandas as pd
 
-from pacsanini.config import SETTINGS_PATH
+from pacsanini.config import (
+    DEFAULT_CONFIG_NAME,
+    DEFAULT_SETTINGS_PATH,
+    PACSANINI_CONF_ENVVAR,
+)
 from pacsanini.errors import InvalidResourceFile
 from pacsanini.models import QueryLevel
 
@@ -81,8 +86,19 @@ def is_db_uri(uri: str) -> bool:
     return False
 
 
-def default_config_path() -> str:
-    """Returns the default configuration path set by an environment
-    variable or by using the default/hard-coded path.
+def default_config_path() -> Optional[str]:
+    """Returns the configuration file that should be used by default.
+    The choosing order is as such:
+    1. If set and if exists, use the PACSANINI_CONF_ENVVAR
+    2. If exists, use the DEFAULT_CONFIG_NAME
+    3. If exists, use the DEFAULT_SETTINGS_PATH
+    4. Otherwise, return None
     """
-    return SETTINGS_PATH
+    env_var = os.environ.get(PACSANINI_CONF_ENVVAR, "")
+    if env_var and os.path.exists(env_var):
+        return env_var
+    if os.path.exists(DEFAULT_CONFIG_NAME):
+        return DEFAULT_CONFIG_NAME
+    if os.path.exists(DEFAULT_SETTINGS_PATH):
+        return DEFAULT_SETTINGS_PATH
+    return None

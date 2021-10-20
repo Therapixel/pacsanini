@@ -9,6 +9,7 @@ import click
 
 from sqlalchemy import create_engine
 
+from pacsanini.cli.base import config_option
 from pacsanini.config import PacsaniniConfig
 from pacsanini.db.utils import (
     TABLES,
@@ -16,19 +17,10 @@ from pacsanini.db.utils import (
     get_db_session,
     initialize_database,
 )
-from pacsanini.utils import default_config_path
 
 
 @click.command(name="init")
-@click.option(
-    "-f",
-    "--config",
-    required=False,
-    type=click.Path(exists=True),
-    default=default_config_path(),
-    show_default=True,
-    help="The path to the configuration file to use for initializing the database.",
-)
+@config_option
 @click.option(
     "--force-init",
     is_flag=True,
@@ -50,15 +42,7 @@ def init_cli(config: str, force_init: bool):
 
 
 @click.command(name="dump")
-@click.option(
-    "-f",
-    "--config",
-    required=False,
-    type=click.Path(exists=True),
-    default=default_config_path(),
-    show_default=True,
-    help="The path to the configuration file to use for dumping the database.",
-)
+@config_option
 @click.option(
     "-o",
     "--output",
