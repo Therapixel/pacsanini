@@ -16,3 +16,4 @@ from pacsanini.db.crud import (
 from pacsanini.db.models import Base, Image, Patient, Series, Study, StudyFind
 from pacsanini.db.parser import parse_dir2sql
 from pacsanini.db.utils import get_db_session
+from pacsanini.db.views import ManufacturerView, StudyMetaView
