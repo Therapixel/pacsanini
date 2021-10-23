@@ -86,7 +86,6 @@ isort = "^5.8.0"
 pyinstaller = "^4.3"
 autoflake = "^1.4"
 pylint = "^2.8.2"
-mkdocs = "^1.1.2"
 mkdocs-material = "^7.1.5"
 mkdocstrings = "^0.15.1"
 pytkdocs = {extras = ["numpy-style"], version = "^0.11.1"}
@@ -99,6 +98,8 @@ types-click = "^7.1.2"
 types-PyYAML = "^5.4.3"
 pytest-docker = "^0.10.3"
 types-requests = "^2.25.8"
+mkdocs = ">=1.2.3"
+livereload = "^2.6.3"
 
 [tool.poetry.scripts]
 pacsanini = 'pacsanini.cli:entry_point'
