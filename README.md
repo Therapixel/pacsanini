@@ -3,7 +3,10 @@
 ![PyPI - Status](https://img.shields.io/pypi/status/pacsanini)
 [![Documentation Status](https://readthedocs.org/projects/pacsanini/badge/?version=latest)](https://pacsanini.readthedocs.io/en/latest/?badge=latest)
 ![GitHub](https://img.shields.io/github/license/Therapixel/pacsanini)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Therapixel/pacsanini/pacsanini%20run%20tests%20for%20PR)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Therapixel/pacsanini)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
 # pacsanini
 
