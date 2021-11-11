@@ -9,6 +9,7 @@ The two main pain points for this are:
 
 * acquiring data from a PACS
 * extracting metadata from DICOM files in research-ready formats (eg: csv)
+* visualize collected DICOM data
 
 The project seeks to target medical/research professionals that are not necessarily
 familiar with coding but wish to obtain data sets and software engineers that wish to

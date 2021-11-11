@@ -24,6 +24,7 @@ exclude = '''
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "def __repr__", "if __name__ == .__main__.:"]
+omit = ["*/__main__.py", "src/pacsanini/dashboard*"]
 
 [tool.isort]
 profile = "black"
@@ -75,6 +76,7 @@ pynetdicom = "^1.5.7"
 PyYAML = ">=5.4"
 SQLAlchemy = {extras = ["mypy"], version = "^1.4.22"}
 SQLAlchemy-Utils = "^0.37.8"
+dash = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 autoflake = "^1.4"

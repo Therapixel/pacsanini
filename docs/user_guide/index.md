@@ -16,3 +16,7 @@ is within the pacsanini ecosystem [here](configuration.md).
 
 Check out an example showing how you would get around to identify and retrieve
 DICOM resources from a PACS node [here](collection.md).
+
+## Visualization
+
+Check out how you can visualize data you've collected to obtain better insights [here](visualization.md).

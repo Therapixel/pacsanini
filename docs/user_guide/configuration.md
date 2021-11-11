@@ -125,6 +125,7 @@ section for more details on command usage.
 | Command | move | net | find | storage | tags |
 | ------- | ---- | --- | ---- | ------- | ---- |
 | config | :material-close: | :material-close: | :material-close: | :material-close: | :material-close: |
+| dashboard | :material-close: | :material-close: | :material-close: | :material-check: | :material-close: |
 | echo    | :material-close: | :material-check: | :material-close: | :material-close: | :material-close: |
 | find    | :material-close: | :material-check: | :material-check: | :material-check: | :material-close: |
 | move    | :material-check: | :material-check: | :material-close: | :material-check: | :material-close: |

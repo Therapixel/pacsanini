@@ -9,6 +9,7 @@ from click import echo, group, option
 
 from pacsanini.__version__ import __version__
 from pacsanini.cli.config import config_cli
+from pacsanini.cli.dashboard import dashboard_cli
 from pacsanini.cli.db import db_cli_group
 from pacsanini.cli.net import echo_cli, find_cli, move_cli, send_cli, server_cli
 from pacsanini.cli.parse import gen_parser, parse
@@ -34,6 +35,7 @@ def entry_point(**kwargs):
 
 
 entry_point.add_command(config_cli)
+entry_point.add_command(dashboard_cli)
 entry_point.add_command(db_cli_group)
 entry_point.add_command(echo_cli)
 entry_point.add_command(find_cli)
