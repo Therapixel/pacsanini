@@ -24,6 +24,7 @@ nav:
     - Installation: 'user_guide/installation.md'
     - Configuration: 'user_guide/configuration.md'
     - Collection: 'user_guide/collection.md'
+    - Visualization: 'user_guide/visualization.md'
     - Tutorials:
       - 'Finding DICOM': 'user_guide/tutorials/finding.md'
       - 'Moving DICOM': 'user_guide/tutorials/moving.md'
@@ -36,6 +37,7 @@ nav:
     - cli: 'api_reference/cli.md'
     - config: 'api_reference/config.md'
     - convert: 'api_reference/convert.md'
+    - dashboard: 'api_reference/dashboard.md'
     - db: 'api_reference/db.md'
     - errors: 'api_reference/errors.md'
     - io: 'api_reference/io.md'
