@@ -8,8 +8,6 @@ pipelines/flows.
 from datetime import timedelta
 
 from prefect import task
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
 
 from pacsanini import db, io, net
 from pacsanini.config import PacsaniniConfig
@@ -42,13 +40,7 @@ def check_if_database_creation_needed(config: PacsaniniConfig, create_db: bool):
 @task
 def create_database_and_tables(config: PacsaniniConfig):
     """Create the pacsanini database before anything is done."""
-    engine: Engine = None
-    try:
-        engine = create_engine(config.storage.resources)
-        initialize_database(engine, echo=False)
-    finally:
-        if engine is not None:
-            engine.dispose()
+    initialize_database(config)
 
 
 @task(**NETWORK_TASK_PARAMS, state_handlers=[find_email_notifier])

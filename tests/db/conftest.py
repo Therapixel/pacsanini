@@ -5,23 +5,29 @@
 """Declare fixtures for the db testing module."""
 import os
 
+from typing import Generator
+
 import pytest
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
+from pacsanini.config import PacsaniniConfig, StorageConfig
 from pacsanini.db.utils import initialize_database
 
 
 @pytest.fixture()
-def sqlite_db_path(tmpdir: str) -> str:
+def sqlite_db_path(tmpdir: str) -> Generator[str, None, None]:
     """A temp path for the sqlite database."""
     path = os.path.join(str(tmpdir), "test.db")
     db_path = f"sqlite:///{path}"
     engine = None
     try:
         engine = create_engine(db_path)
-        initialize_database(engine, echo=False, force_init=True)
+        config = PacsaniniConfig(
+            storage=StorageConfig(resources=db_path, directory="./")
+        )
+        initialize_database(config, echo=False, force_init=True)
     finally:
         engine.dispose()
 
@@ -32,7 +38,7 @@ def sqlite_db_path(tmpdir: str) -> str:
 
 
 @pytest.fixture()
-def sqlite_session(sqlite_db_path: str) -> Session:
+def sqlite_session(sqlite_db_path: str) -> Generator[Session, None, None]:
     """Return a session for the sqlite datatabase."""
     engine = create_engine(sqlite_db_path)
     DBSession = sessionmaker(bind=engine)

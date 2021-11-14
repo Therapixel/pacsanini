@@ -7,10 +7,16 @@ from typing import List
 
 import click
 
-from sqlalchemy import create_engine
+from alembic import command
+from loguru import logger
 
 from pacsanini.cli.base import config_option
 from pacsanini.config import PacsaniniConfig
+from pacsanini.db.migrate import (
+    get_alembic_config,
+    get_current_version,
+    get_latest_version,
+)
 from pacsanini.db.utils import (
     TABLES,
     dump_database,
@@ -36,9 +42,35 @@ def init_cli(config: str, force_init: bool):
     )
 
     pacsanini_config = load_func(config)
+    initialize_database(pacsanini_config, force_init=force_init)
 
-    engine = create_engine(pacsanini_config.storage.resources)
-    initialize_database(engine, force_init=force_init)
+
+@click.command(name="upgrade")
+@config_option
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    default=False,
+    help="If set, only check if the database needs an upgrade and only print commands.",
+)
+def upgrade_cli(config: str, dry_run: bool):
+    """Migrate the database schema."""
+    ext = config.rsplit(".", 1)[-1].lower()
+    load_func = (
+        PacsaniniConfig.from_json if ext == "json" else PacsaniniConfig.from_yaml
+    )
+    pacsanini_config = load_func(config)
+    alembic_config = get_alembic_config(pacsanini_config)
+
+    latest_version = get_latest_version(alembic_config)
+    current_version = get_current_version(alembic_config)
+    needs_update = not ((latest_version == current_version) and current_version)
+
+    if needs_update:
+        logger.info("The current database is not up to date...")
+        command.upgrade(alembic_config, latest_version, sql=dry_run)
+    else:
+        logger.info("Your database is already up to date!")
 
 
 @click.command(name="dump")
@@ -47,7 +79,10 @@ def init_cli(config: str, force_init: bool):
     "-o",
     "--output",
     default=None,
-    help="If set, specify the output directory to write results to. They will be written to the current directory otherwise.",
+    help=(
+        "If set, specify the output directory to write results to."
+        " They will be written to the current directory otherwise."
+    ),
 )
 @click.option(
     "-t",
@@ -56,7 +91,10 @@ def init_cli(config: str, force_init: bool):
     multiple=True,
     show_choices=True,
     default=list(TABLES.keys()),
-    help="If specified, select one or more tables to dump in CSV format. The default is all tables.",
+    help=(
+        "If specified, select one or more tables to dump in CSV format."
+        " The default is all tables."
+    ),
 )
 def dump_cli(config: str, output: str, table: List[str]):
     """Dump pacsanini database tables in CSV format."""
@@ -77,3 +115,4 @@ def db_cli_group():
 
 db_cli_group.add_command(init_cli)
 db_cli_group.add_command(dump_cli)
+db_cli_group.add_command(upgrade_cli)

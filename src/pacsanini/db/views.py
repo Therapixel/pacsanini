@@ -13,6 +13,29 @@ from sqlalchemy_utils import create_view
 from pacsanini.db.models import Base, Image, Study
 
 
+STUDY_META_VIEW_SELECT = (
+    select(
+        [
+            Image.__table__.c.patient_id,
+            Study.__table__.c.study_uid,
+            Study.__table__.c.study_date,
+            Study.__table__.c.patient_age,
+            Image.__table__.c.manufacturer,
+            func.count(Image.__table__.c.id).label("image_count"),
+        ]
+    )
+    .join(Image.__table__, Study.__table__.c.study_uid == Image.__table__.c.study_uid)
+    .group_by(Study.__table__.c.study_uid)
+)
+
+MANUFACTURER_VIEW_SELECT = select(
+    [
+        Image.__table__.c.manufacturer,
+        func.count(Image.__table__.c.id).label("image_count"),
+    ]
+).group_by(Image.__table__.c.manufacturer)
+
+
 class StudyMetaView(Base):
     """The study_metadata view enables querying studies based
     on high-level information such as the number of images
@@ -43,22 +66,7 @@ class StudyMetaView(Base):
 
     __tablename__ = "study_metadata"
     __table__ = create_view(
-        name="study_metadata",
-        selectable=select(
-            [
-                Image.__table__.c.patient_id,
-                Study.__table__.c.study_uid,
-                Study.__table__.c.study_date,
-                Study.__table__.c.patient_age,
-                Image.__table__.c.manufacturer,
-                func.count(Image.__table__.c.id).label("image_count"),
-            ]
-        )
-        .join(
-            Image.__table__, Study.__table__.c.study_uid == Image.__table__.c.study_uid
-        )
-        .group_by(Study.__table__.c.study_uid),
-        metadata=Base.metadata,
+        name="study_metadata", selectable=STUDY_META_VIEW_SELECT, metadata=Base.metadata
     )
 
 
@@ -80,12 +88,7 @@ class ManufacturerView(Base):
     __tablename__ = "manufacturers"
     __table__ = create_view(
         name="manufacturers",
-        selectable=select(
-            [
-                Image.__table__.c.manufacturer,
-                func.count(Image.__table__.c.id).label("image_count"),
-            ]
-        ).group_by(Image.__table__.c.manufacturer),
+        selectable=MANUFACTURER_VIEW_SELECT,
         metadata=Base.metadata,
     )
 

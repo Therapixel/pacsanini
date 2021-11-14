@@ -116,7 +116,8 @@ def find(
             upper_date = current_date + date_increment
 
         if current_date == end_date:
-            requested_date = current_date.strftime("%Y%m%d")
+            date_str = current_date.strftime("%Y%m%d")
+            requested_date = f"{date_str}"
         else:
             requested_date = (
                 f"{current_date.strftime('%Y%m%d')}-{upper_date.strftime('%Y%m%d')}"
