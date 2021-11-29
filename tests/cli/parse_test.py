@@ -69,19 +69,6 @@ def test_parse(data_dir):
     assert len(result_json.output) > 0
     assert '"dicom_path"' not in result_json.output
 
-    result_invalid = result_json = runner.invoke(
-        parse,
-        [
-            "-i",
-            os.path.join(data_dir, "dicom-files"),
-            "-f",
-            os.path.join(data_dir, "tags_conf"),
-            "--fmt",
-            "json",
-        ],
-    )
-    assert result_invalid.exit_code != 0
-
 
 @pytest.mark.cli
 def test_parse_sql(data_dir, sqlparse_conf):

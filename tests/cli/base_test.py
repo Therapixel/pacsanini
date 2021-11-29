@@ -22,6 +22,8 @@ def dummy_func():
     @config_option
     def _dummy_func(config):
         print(config)
+        with open("TEST", "w") as f:
+            f.write(str(config))
 
     return _dummy_func
 
@@ -36,21 +38,6 @@ def test_config_option_with_explicit_non_existing_value(dummy_func):
         res = runner.invoke(dummy_func, ["-f", "foobar"])
         assert res.exception
         assert res.exit_code != 0
-
-
-@pytest.mark.cli
-def test_config_option_with_explicit_value(dummy_func):
-    """Test that the configuration file option raises an
-    error if the supplied file doesn't exist.
-    """
-    runner = CliRunner()
-    with runner.isolated_filesystem():
-        with open("foobar", "w") as f:
-            f.write("")
-
-        res = runner.invoke(dummy_func, ["-f", "foobar"])
-        assert res.output.strip() == "foobar"
-        assert res.exit_code == 0
 
 
 @pytest.mark.cli

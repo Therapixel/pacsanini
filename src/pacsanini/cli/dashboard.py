@@ -26,12 +26,8 @@ from pacsanini.dashboard.app import run_server
     default=False,
     help="If set, launch the dashboard in debug mode.",
 )
-def dashboard_cli(config: str, port: int, debug: bool):
+def dashboard_cli(config: PacsaniniConfig, port: int, debug: bool):
     """Launch the pacsanini dashboard. This only works if the
     pacsanini backend is a sql database.
     """
-    if config.lower().endswith("json"):
-        cfg = PacsaniniConfig.from_json(config)
-    else:
-        cfg = PacsaniniConfig.from_yaml(config)
-    run_server(cfg, port=port, debug=debug)
+    run_server(config, port=port, debug=debug)

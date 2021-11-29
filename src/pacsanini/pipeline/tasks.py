@@ -23,6 +23,8 @@ NETWORK_TASK_PARAMS = {"max_retries": 3, "retry_delay": timedelta(minutes=60)}
 @task
 def load_configuration(config_path: str) -> PacsaniniConfig:
     """Load the pipeline/flow configuration."""
+    if isinstance(config_path, PacsaniniConfig):
+        return config_path
     ext = config_path.lower().rsplit(".", 1)[-1]
     if ext == "json":
         config = PacsaniniConfig.from_json(config_path)

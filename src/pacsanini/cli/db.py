@@ -32,17 +32,11 @@ from pacsanini.db.utils import (
     is_flag=True,
     help="If set, force the creation of the database regardless of whether it exists.",
 )
-def init_cli(config: str, force_init: bool):
+def init_cli(config: PacsaniniConfig, force_init: bool):
     """Initialize the database and its tables using the resources
     value in the supplied configuration file.
     """
-    ext = config.rsplit(".", 1)[-1].lower()
-    load_func = (
-        PacsaniniConfig.from_json if ext == "json" else PacsaniniConfig.from_yaml
-    )
-
-    pacsanini_config = load_func(config)
-    initialize_database(pacsanini_config, force_init=force_init)
+    initialize_database(config, force_init=force_init)
 
 
 @click.command(name="upgrade")
@@ -53,14 +47,9 @@ def init_cli(config: str, force_init: bool):
     default=False,
     help="If set, only check if the database needs an upgrade and only print commands.",
 )
-def upgrade_cli(config: str, dry_run: bool):
+def upgrade_cli(config: PacsaniniConfig, dry_run: bool):
     """Migrate the database schema."""
-    ext = config.rsplit(".", 1)[-1].lower()
-    load_func = (
-        PacsaniniConfig.from_json if ext == "json" else PacsaniniConfig.from_yaml
-    )
-    pacsanini_config = load_func(config)
-    alembic_config = get_alembic_config(pacsanini_config)
+    alembic_config = get_alembic_config(config)
 
     latest_version = get_latest_version(alembic_config)
     current_version = get_current_version(alembic_config)
@@ -96,15 +85,9 @@ def upgrade_cli(config: str, dry_run: bool):
         " The default is all tables."
     ),
 )
-def dump_cli(config: str, output: str, table: List[str]):
+def dump_cli(config: PacsaniniConfig, output: str, table: List[str]):
     """Dump pacsanini database tables in CSV format."""
-    ext = config.rsplit(".", 1)[-1].lower()
-    load_func = (
-        PacsaniniConfig.from_json if ext == "json" else PacsaniniConfig.from_yaml
-    )
-    pacsanini_config = load_func(config)
-
-    with get_db_session(pacsanini_config.storage.resources) as session:
+    with get_db_session(config.storage.resources) as session:
         dump_database(session, output=output, tables=table)
 
 
