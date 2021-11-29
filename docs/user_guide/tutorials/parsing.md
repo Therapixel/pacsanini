@@ -48,6 +48,16 @@ In such cases, you can simply pass the tag name in the following manner:
 anatomic_region = get_tag_value(dcm, "AnatomicRegionSequence.CodeMeaning")
 ```
 
+Nested tags inside sequences with more than one element can also be accessed using the bracket
+notation. For example:
+
+```python
+code_value = get_tag_value(dcm, "DeidentificationMethodCodeSequence[1]CodingSchemeDesignator")
+```
+
+In this example, the `CodingSchemeDesignator` tag will be found inside the second element
+of the `DeidentificationMethodCodeSequence` sequence (indexing is 0 based).
+
 ## Parsing multiple tags
 
 If you want to obtain multiple tag values from a DICOM file, you can use the `parse_dicom` function. This function accepts a `pydicom.Dataset` object (or a filepath to the the DICOM file) and an iterable of *tags* (that you can imagine as a set of parsing instuctions). You will see that these *tags* can be simple `dict` instances or special `DicomTag` instances.

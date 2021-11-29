@@ -8,7 +8,8 @@ the core testing module for DICOM parsing so it should be treated with great att
 """
 import os
 
-from typing import Generator
+from collections.abc import Callable
+from typing import Any, Generator
 
 import pandas as pd
 import pydicom
@@ -43,30 +44,51 @@ def tags2parse_results(dicom):
     }
 
 
+def rand_val(_):
+    """Method used as a paramatrized test callback."""
+    return "foobar"
+
+
 @pytest.mark.parse
-def test_get_dicom_tag_value(dicom: pydicom.FileDataset):
+@pytest.mark.parametrize(
+    "tag_name,callback,expected",
+    [
+        ("SOPInstanceUID", None, "2.25.98665557379884205730193271628654420727"),
+        ("SOPInstanceUID", rand_val, "foobar"),
+        ("NonExistent.Tag", None, None),
+        ("ViewCodeSequence.CodeValue", None, "R-10226"),
+        ("ViewCodeSequence.CodeValue", rand_val, "foobar"),
+        ("DeidentificationMethodCodeSequence[1]CodingSchemeDesignator", None, "DCM"),
+        ("DeidentificationMethodCodeSequence[5]CodingSchemeDesignator", None, None),
+    ],
+)
+def test_get_dicom_tag_value(
+    tag_name: str, callback: Callable, expected: Any, dicom: pydicom.FileDataset
+):
     """Test that a DICOM tag value is returned correctly."""
-    image_uid = parse.get_dicom_tag_value(dicom, "SOPInstanceUID")
-    assert image_uid == dicom.SOPInstanceUID
+    tag_value = parse.get_dicom_tag_value(dicom, tag_name, callback=callback)
+    assert tag_value == expected
+    # image_uid = parse.get_dicom_tag_value(dicom, "SOPInstanceUID")
+    # assert image_uid == dicom.SOPInstanceUID
 
-    def rand_val(_):
-        return "foobar"
+    # def rand_val(_):
+    #     return "foobar"
 
-    image_uid = parse.get_dicom_tag_value(dicom, "SOPInstanceUID", callback=rand_val)
-    assert image_uid == "foobar"
+    # image_uid = parse.get_dicom_tag_value(dicom, "SOPInstanceUID", callback=rand_val)
+    # assert image_uid == "foobar"
 
-    new_value = parse.get_dicom_tag_value(dicom, "NonExistent.Tag")
-    assert new_value is None
+    # new_value = parse.get_dicom_tag_value(dicom, "NonExistent.Tag")
+    # assert new_value is None
 
-    # parse a nested tag without callback
-    new_value = parse.get_dicom_tag_value(dicom, "ViewCodeSequence.CodeValue")
-    assert new_value == "R-10226"
+    # # parse a nested tag without callback
+    # new_value = parse.get_dicom_tag_value(dicom, "ViewCodeSequence.CodeValue")
+    # assert new_value == "R-10226"
 
-    # parse a nested tag with callback
-    new_value = parse.get_dicom_tag_value(
-        dicom, "ViewCodeSequence.CodeValue", callback=rand_val
-    )
-    assert new_value == "foobar"
+    # # parse a nested tag with callback
+    # new_value = parse.get_dicom_tag_value(
+    #     dicom, "ViewCodeSequence.CodeValue", callback=rand_val
+    # )
+    # assert new_value == "foobar"
 
 
 @pytest.mark.parse
@@ -120,10 +142,10 @@ def test_parse_dicoms(
     """Test that parsing multiple DICOM files is correctly done."""
     results = parse.parse_dicoms([dicom_path, dicom], tags2parse)
     assert isinstance(results, Generator)
-    results = list(results)
+    results_list = list(results)
 
     expected = [tags2parse_results, tags2parse_results]
-    assert results == expected
+    assert results_list == expected
 
     tag_group = parse.DicomTagGroup(tags=tags2parse)
     assert list(tag_group.parse_dicoms([dicom_path, dicom])) == expected

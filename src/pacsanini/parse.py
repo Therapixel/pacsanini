@@ -6,6 +6,7 @@
 package that are used to obtain DICOM tag values from files.
 """
 import json
+import re
 
 from contextlib import suppress
 from typing import Any, Callable, Dict, Generator, Iterable, List, Optional, Union
@@ -18,13 +19,29 @@ from pydicom import dcmread
 from pydicom.dataset import Dataset
 
 
+_SEQUENCE = re.compile(r"\w+\[(\d)\]\w+")
+
+
 def get_dicom_tag_value(
-    data: Dataset, tag_name: str, *, callback: Callable = None
+    data: Dataset, tag_name: str, *, callback: Callable[[Any], Any] = None
 ) -> Any:
     """Get the tag value of a particular DICOM tag. If the DICOM
     tag could not be found, None is returned. Nested tags can also
     be retrieved -to do so, use the dot notation to indicate
     the nested tag to retrieve.
+
+    Tag names can have the following structures:
+    * if the tag is found at the top level of the DICOM structure,
+      its name suffices (eg: "SOPInstanceUID").
+    * if the tag is nested, you can use the following structure:
+      "<tag name>.<nested tag name>" (eg: "ViewCodeSequence.CodeValue").
+      You can access as many nested tags as you want. Using the dot
+      separator will always cause the method to read the first element
+      of the DICOM sequence.
+    * if the tag is nested and the nested tag is not in the sequence's
+      first element, you can use the bracket notation "<tag name>[1]<nested tag name>"
+      (eg: "DeidentificationMethodCodeSequence[1]CodingSchemeDesignator").
+      Index errors will lead to None being returned.
 
     Parameters
     ----------
@@ -32,7 +49,7 @@ def get_dicom_tag_value(
         The DICOM data element to search in.
     tag_name : str
         The name of the DICOM tag. This can be a nested tag.
-    callback : Callable
+    callback : Callable[[Any], Any]
         A callback function to use to format the obtained DICOM
         tag value.
 
@@ -41,17 +58,24 @@ def get_dicom_tag_value(
     Any
         The DICOM tag value or None if it was not found.
     """
-    if "." in tag_name:
-        tag, sub_tag = tag_name.split(".", 1)
+    match = _SEQUENCE.search(tag_name)
+    if "." in tag_name or match:
+        if "." in tag_name:
+            tag, sub_tag = tag_name.split(".", 1)
+            seq_idx = 0
+        else:
+            tag = tag_name[: match.start(1) - 1]
+            sub_tag = tag_name[match.end(1) + 1 :]
+            seq_idx = int(match.group(1))
+
         try:
             seq = data.data_element(tag)
-        except KeyError:
+            if seq is None or seq.VM == 0:
+                # ValueMultiplicity set to 0 indicates an invalid sequence.
+                return None
+            return get_dicom_tag_value(seq[seq_idx], sub_tag, callback=callback)
+        except (KeyError, IndexError):
             return None
-
-        if seq is None or seq.VM == 0:
-            # ValueMultiplicity set to 0 indicates an invalid sequence.
-            return None
-        return get_dicom_tag_value(seq[0], sub_tag, callback=callback)
 
     try:
         data_el = data.data_element(tag_name)
@@ -70,7 +94,7 @@ def get_tag_value(
     data: Dataset,
     tag_name: Union[Iterable[str], str],
     *,
-    callback: Callable = None,
+    callback: Callable[[Any], Any] = None,
     default_val: Any = None,
 ) -> Any:
     """Get the tag value of a particular DICOM tag. If the DICOM
@@ -84,7 +108,7 @@ def get_tag_value(
         The DICOM data element to search in.
     tag_name : str
         The name of the DICOM tag. This can be a nested tag.
-    callback : Callable
+    callback : Callable[[Any], Any]
         A callback function to use to format the obtained DICOM
         tag value.
     default_val : Any
@@ -138,7 +162,7 @@ class DicomTag(BaseModel):
     default_val : Optional[Any]
         If set and the tag_name did not find an existing value,
         return the default_val.
-    callback : Optional[Callable]
+    callback : Optional[Callable[[Any], Any]]
         If set, use the callback method to format the parsed
         DICOM tag result.
     """
@@ -146,7 +170,7 @@ class DicomTag(BaseModel):
     tag_name: Union[List[str], str]
     tag_alias: Optional[str] = ""
     default_val: Optional[Any] = None
-    callback: Optional[Callable] = None
+    callback: Optional[Callable[[Any], Any]] = None
 
     @validator("tag_alias", pre=True, always=True)
     def validate_alias(cls, v, values):  # pylint: disable=no-self-argument,no-self-use
