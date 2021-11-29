@@ -12,7 +12,7 @@ from typing import Callable
 
 from click import UNPROCESSED, BadParameter, Command, Option, option
 
-from pacsanini.config import DEFAULT_CONFIG_NAME, PACSANINI_CONF_ENVVAR
+from pacsanini.config import DEFAULT_CONFIG_NAME, PACSANINI_CONF_ENVVAR, PacsaniniConfig
 from pacsanini.utils import default_config_path
 
 
@@ -58,16 +58,22 @@ def config_option(function: Callable) -> Callable:
             if not config_path:
                 msg = (
                     "No configuration file provided and no default"
-                    " configuration file in the following locations:"
-                    f" (1) Using the {PACSANINI_CONF_ENVVAR} env var,"
-                    f" (2) Using a {DEFAULT_CONFIG_NAME} file in your current dir,"
+                    " configuration file in the following locations:\n"
+                    f" (1) Using the {PACSANINI_CONF_ENVVAR} env var,\n"
+                    f" (2) Using a {DEFAULT_CONFIG_NAME} file in your current dir,\n"
                     f" (3) Using the {DEFAULT_CONFIG_NAME} file in your homedir."
                 )
                 raise BadParameter(msg, ctx=ctx, param=param)
             return config_path
         if not os.path.exists(value):
             raise BadParameter(f"'{value}' does not exist")
-        return value
+
+        ext = value.rsplit(".", 1)[-1].lower()
+        load_func = (
+            PacsaniniConfig.from_json if ext == "json" else PacsaniniConfig.from_yaml
+        )
+        pacsanini_config = load_func(value)
+        return pacsanini_config
 
     function = option(
         "-f",
@@ -77,10 +83,10 @@ def config_option(function: Callable) -> Callable:
         callback=validate_path,
         help=(
             "The pacsanini configuration file to use. The order of evaluation is:"
-            " (1) the value you explicitely provided,"
-            f" (2) the value provided by the {PACSANINI_CONF_ENVVAR} env var,"
-            f" (3) a file named {DEFAULT_CONFIG_NAME} in your current directory (if it exists),"
-            f" (4) a file named {DEFAULT_CONFIG_NAME} in your home directory (if it exists)."
+            " (1) the value you explicitely provided,\n"
+            f" (2) the value provided by the {PACSANINI_CONF_ENVVAR} env var,\n"
+            f" (3) a file named {DEFAULT_CONFIG_NAME} in your current directory,\n"
+            f" (4) a file named {DEFAULT_CONFIG_NAME} in your home directory.\n"
         ),
     )(function)
     return function

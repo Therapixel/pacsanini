@@ -100,7 +100,7 @@ from pacsanini.io import parse_dir2csv, parse_dir2json
 )
 def parse(
     src: str,
-    config: str,
+    config: PacsaniniConfig,
     output: str,
     fmt: str,
     include_path: bool,
@@ -113,20 +113,7 @@ def parse(
     DICOM files and write the results to the output destination. Configuration
     files can be obtained using the parse-conf command.
     """
-    ext = config.split(".")[-1].lower()
-    if ext not in {"json", "yaml", "yml"}:
-        err_msg = (
-            "DICOM tag specification files should have 'json',"
-            " 'yml', or 'yaml' extensions."
-        )
-        err_msg += f" Obtained: '{config}'"
-        raise ClickException(err_msg)
-
-    if ext == "json":
-        p_config = PacsaniniConfig.from_json(config)
-    else:
-        p_config = PacsaniniConfig.from_yaml(config)
-    parser = p_config.get_tags()
+    parser = config.get_tags()
 
     if fmt == "csv":
         parse_dir2csv(
@@ -148,7 +135,7 @@ def parse(
     else:
         parse_dir2sql(
             src,
-            p_config.storage.resources,
+            config.storage.resources,
             institution_name=institution_name,
             nb_threads=threads,
             create_tables=create_tables,

@@ -6,6 +6,8 @@
 for finding, moving, and parsing DICOM resources.
 """
 
+from typing import Union
+
 from prefect import Flow, Parameter, case, context
 from prefect.engine.state import State
 
@@ -24,7 +26,7 @@ from pacsanini.utils import is_db_uri
 
 
 def run_pacsanini_pipeline(
-    config_path: str, nb_threads: int = 1, init_db: bool = False
+    p_config: Union[PacsaniniConfig, str], nb_threads: int = 1, init_db: bool = False
 ) -> State:
     """Run a DICOM collection and structuring flow. Overall, this will
     take care of:
@@ -38,7 +40,7 @@ def run_pacsanini_pipeline(
 
     Parameters
     ----------
-    config_path : str
+    p_config : Union[PacsaniniConfig, str]
         The configuration file to use for the pipeline's execution.
     nb_threads : int
         The number of threads to use for parsing DICOM resources. This
@@ -53,11 +55,14 @@ def run_pacsanini_pipeline(
     State
         The flow's end state.
     """
-    ext = config_path.rsplit(".", 1)[-1].lower()
-    load_func = (
-        PacsaniniConfig.from_json if ext == "json" else PacsaniniConfig.from_yaml
-    )
-    config_ = load_func(config_path)
+    if isinstance(p_config, str):
+        ext = p_config.rsplit(".", 1)[-1].lower()
+        load_func = (
+            PacsaniniConfig.from_json if ext == "json" else PacsaniniConfig.from_yaml
+        )
+        config_ = load_func(p_config)
+    else:
+        config_ = p_config
 
     if not config_.can_find():
         raise InvalidConfigError("Missing find configuration.")
@@ -90,7 +95,5 @@ def run_pacsanini_pipeline(
             flow.add_task(parse_task)
 
     return flow.run(
-        config_path_param=config_path,
-        nb_threads_param=nb_threads,
-        init_db_param=init_db,
+        config_path_param=p_config, nb_threads_param=nb_threads, init_db_param=init_db
     )

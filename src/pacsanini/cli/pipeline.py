@@ -6,6 +6,7 @@
 import click
 
 from pacsanini.cli.base import config_option
+from pacsanini.config import PacsaniniConfig
 from pacsanini.pipeline import run_pacsanini_pipeline
 
 
@@ -26,6 +27,6 @@ from pacsanini.pipeline import run_pacsanini_pipeline
     show_default=True,
     help="If --init-db is set and the results backend is a database: create the database.",
 )
-def orchestrate_cli(config: str, threads: int, init_db: bool):
+def orchestrate_cli(config: PacsaniniConfig, threads: int, init_db: bool):
     """Run the find-move-parse pipeline orchestrated by pacsanini."""
     run_pacsanini_pipeline(config, nb_threads=threads, init_db=init_db)
