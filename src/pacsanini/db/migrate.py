@@ -56,7 +56,7 @@ def get_latest_version(config: Config) -> str:
         nonlocal revision
         revision = text.split(" ")[0]
 
-    config.print_stdout = print_stdout
+    config.print_stdout = print_stdout  # type: ignore
     command.current(config)
     return revision
 
@@ -176,7 +176,7 @@ class DropViewOp(ReversibleOp):
 @Operations.implementation_for(CreateViewOp)
 def create_view(operations: Operations, operation: ReversibleOp):
     """Custom command used to create views during migration operations."""
-    operations.execute(
+    operations.execute(  # type: ignore
         "CREATE VIEW %s AS %s"
         % (
             operation.target.name,
@@ -188,6 +188,6 @@ def create_view(operations: Operations, operation: ReversibleOp):
 @Operations.implementation_for(DropViewOp)
 def drop_view(operations: Operations, operation: ReversibleOp):
     """Custom command used to drop views during migrations operations."""
-    operations.execute(
+    operations.execute(  # type: ignore
         "DROP VIEW %s" % operation.target.name
     )  # pylint: disable=consider-using-f-string
