@@ -76,3 +76,22 @@ session = DBSession()
 for image in session.query(Image).all():
     print(image)
 ```
+
+## Upgrading the database
+
+It may happen that the database schema in `pacsanini` changes. To help live with this,
+you can simply run the following command:
+
+```bash
+pacsanini db upgrade
+```
+
+If the database version is already up to date, no operations will occur. If you want to
+check whether your database's schema is up to date with your `pacsanini` version, you
+can run:
+
+```bash
+pacsanini db upgrade --dry-run
+```
+
+and check what the output messages say.

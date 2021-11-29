@@ -68,27 +68,6 @@ def test_get_dicom_tag_value(
     """Test that a DICOM tag value is returned correctly."""
     tag_value = parse.get_dicom_tag_value(dicom, tag_name, callback=callback)
     assert tag_value == expected
-    # image_uid = parse.get_dicom_tag_value(dicom, "SOPInstanceUID")
-    # assert image_uid == dicom.SOPInstanceUID
-
-    # def rand_val(_):
-    #     return "foobar"
-
-    # image_uid = parse.get_dicom_tag_value(dicom, "SOPInstanceUID", callback=rand_val)
-    # assert image_uid == "foobar"
-
-    # new_value = parse.get_dicom_tag_value(dicom, "NonExistent.Tag")
-    # assert new_value is None
-
-    # # parse a nested tag without callback
-    # new_value = parse.get_dicom_tag_value(dicom, "ViewCodeSequence.CodeValue")
-    # assert new_value == "R-10226"
-
-    # # parse a nested tag with callback
-    # new_value = parse.get_dicom_tag_value(
-    #     dicom, "ViewCodeSequence.CodeValue", callback=rand_val
-    # )
-    # assert new_value == "foobar"
 
 
 @pytest.mark.parse

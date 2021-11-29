@@ -16,8 +16,9 @@ from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
+from pacsanini.config import PacsaniniConfig, StorageConfig
 from pacsanini.db.dcm2model import dcm2dbmodels, dcm2study_finding
-from pacsanini.db.models import Base, Image, Patient, Series, Study, StudyFind
+from pacsanini.db.models import Image, Patient, Series, Study, StudyFind
 
 
 def add_found_study(session: Session, dcm: Dataset) -> Optional[StudyFind]:
@@ -225,9 +226,16 @@ class DBWrapper:
         """Obtain a session instance"""
         self.engine = create_engine(self.conn_uri)
         if self.create_tables:
-            Base.metadata.create_all(bind=self.engine, checkfirst=True)
-        Session_ = sessionmaker(bind=self.engine)
-        self.session = Session_()
+            config = PacsaniniConfig(
+                storage=StorageConfig(resources=self.conn_uri, directory="./")
+            )
+            from pacsanini.db.utils import (  # pylint: disable=import-outside-toplevel
+                initialize_database,
+            )
+
+            initialize_database(config)
+        DBSession = sessionmaker(bind=self.engine)
+        self.session = DBSession()
         return self.session
 
     def close(self):

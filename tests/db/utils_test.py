@@ -13,6 +13,7 @@ from sqlalchemy import create_engine, inspect
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
+from pacsanini.config import PacsaniniConfig, StorageConfig
 from pacsanini.db import models, utils, views
 
 
@@ -34,7 +35,10 @@ def pristine_db_engine(tmpdir):
 @pytest.fixture
 def initialized_db_url(pristine_db_engine):
     """Return the URL of an initialized database."""
-    utils.initialize_database(pristine_db_engine)
+    config = PacsaniniConfig(
+        storage=StorageConfig(resources=str(pristine_db_engine.url), directory="./")
+    )
+    utils.initialize_database(config)
     db_url = str(pristine_db_engine.url)
     return db_url
 
@@ -70,10 +74,14 @@ def test_initialize_database(pristine_db_engine: Engine):
     """Test that the database can be correctly initialized and that the
     expected tables and views exist.
     """
-    utils.initialize_database(pristine_db_engine, echo=False)
+    config = PacsaniniConfig(
+        storage=StorageConfig(resources=str(pristine_db_engine.url), directory="./")
+    )
+    utils.initialize_database(config, echo=False)
     inspector = inspect(pristine_db_engine)
 
     expected_table_names = [
+        "alembic_version",
         models.Image.__tablename__,
         models.Series.__tablename__,
         models.Study.__tablename__,

@@ -24,7 +24,7 @@ exclude = '''
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "def __repr__", "if __name__ == .__main__.:"]
-omit = ["*/__main__.py", "src/pacsanini/dashboard*"]
+omit = ["*/__main__.py", "src/pacsanini/dashboard*", "src/pacsanini/db/migrations*"]
 
 [tool.isort]
 profile = "black"
@@ -66,6 +66,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.7.1"
+alembic = "^1.7.4"
 click = "^7.1.2"
 loguru = "^0.5.3"
 pandas = "^1.2.4"
@@ -116,7 +117,7 @@ max-locals=16
 [tool.pylint.master]
 fail-under="9.0"
 suggestion-mode="yes"
-extension-pkg-whitelist="pydantic"
+extension-pkg-whitelist=["pydantic", "alembic"]
 load-plugins="pylint_pytest"
 
 [tool.pylint.messages_control]
@@ -205,6 +206,9 @@ disable=[
 [tool.pylint.format]
 max-line-length=88
 
+[tool.pylint.typecheck]
+ignored-modules=["alembic"]
+
 [tool.pytest.ini_options]
 addopts = "--cov=src/pacsanini --cov-report=term-missing --cov-report=html --durations=10"
 markers = [
@@ -222,7 +226,8 @@ minversion = "6.0"
 testpaths = ["tests"]
 filterwarnings = [
   'ignore:Starting in pydicom 3.0, Dataset.file_meta must be a FileMetaDataset class instance',
-  "ignore:Using 'method_whitelist' with Retry is deprecated and will be removed in v2.0."
+  "ignore:Using 'method_whitelist' with Retry is deprecated and will be removed in v2.0.",
+  'ignore::sqlalchemy.exc.SADeprecationWarning'
 ]
 
 [build-system]

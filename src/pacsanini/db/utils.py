@@ -10,25 +10,28 @@ from contextlib import contextmanager
 from time import time
 from typing import Generator, List
 
+from alembic import command
 from loguru import logger
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy_utils import create_database, database_exists
 
-from pacsanini.db.models import Base, Image, Patient, Series, Study, StudyFind
+from pacsanini.config import PacsaniniConfig
+from pacsanini.db.migrate import get_alembic_config, get_latest_version
+from pacsanini.db.models import Image, Patient, Series, Study, StudyFind
 
 
 def initialize_database(
-    engine: Engine, echo: bool = True, force_init: bool = False
+    config: PacsaniniConfig, echo: bool = True, force_init: bool = False
 ) -> None:
     """Initialize the pacsanini database after checking whether it
     already exists or not.
 
     Parameters
     ----------
-    engine : Engine
-        The connection engine to use for creating the database.
+    config : PacsaniniConfig
+        The configuration to use for the database initialization.
     echo : bool
         Whether to echo SQL statements made during the creation
         of the database. The default is True.
@@ -37,14 +40,17 @@ def initialize_database(
         This is mainly useful for sqlite databases as the sqlite file will be created
         as soon as the engine is created. The default is False.
     """
-    logger.info(f"Initializing new pacsanini database instance {engine.url} ...")
-    if not database_exists(engine.url) or force_init:
-        orig_echo = engine.echo or False
-        engine.echo = echo
-        create_database(engine.url)
-        Base.metadata.create_all(bind=engine)
-        logger.info("pacsanini database initialized!")
-        engine.echo = orig_echo
+    logger.info("Initializing new pacsanini database instance...")
+    if not database_exists(config.storage.resources) or force_init:
+        create_database(config.storage.resources)
+
+        alembic_config = get_alembic_config(config)
+        revision = get_latest_version(alembic_config)
+
+        command.current(alembic_config)
+        if echo:
+            command.upgrade(alembic_config, revision, sql=True)
+        command.upgrade(alembic_config, revision)
     else:
         logger.info("pacsanini database already found... Skipping initialization.")
 
