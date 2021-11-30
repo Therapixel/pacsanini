@@ -36,7 +36,7 @@ include_trailing_comma = true
 
 [tool.poetry]
 name = "pacsanini"
-version = "0.2.0"
+version = "0.2.1"
 description = "A package for DICOM utilities."
 license = "Apache 2.0"
 authors = ["Aurélien Chick <achick@therapixel.com>"]
@@ -46,7 +46,7 @@ keywords = [
   "DICOM", "PACS", "medical imagery",
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
   "Topic :: Software Development :: Build Tools",
   "License :: OSI Approved :: Apache Software License",
