@@ -10,7 +10,9 @@ import os
 import socket
 
 from datetime import datetime, timedelta
+from functools import partial
 from typing import Any, Dict, Tuple
+from unittest.mock import patch
 
 import pydicom
 import pytest
@@ -100,13 +102,15 @@ def orthanc_node(
     assert res.status_code == 200
 
     study_dir = os.path.join(data_dir, "dicom-files", dicom.StudyInstanceUID)
-    results = send_dicom(
-        study_dir,
-        src_node={"aetitle": "pacsanini"},
-        dest_node={"aetitle": "TPXORTHANC", "ip": docker_ip, "port": dicom_port},
-    )
-    for (_, res) in results:
-        assert res.Status == 0  # type: ignore
+    lazy_dcmread = partial(pydicom.dcmread, stop_before_pixels=True)
+    with patch("pacsanini.net.c_store.dcmread", new=lazy_dcmread):
+        results = send_dicom(
+            study_dir,
+            src_node={"aetitle": "pacsanini"},
+            dest_node={"aetitle": "TPXORTHANC", "ip": docker_ip, "port": dicom_port},
+        )
+        for (_, res) in results:
+            assert res.Status == 0  # type: ignore
 
     return "TPXORTHANC", docker_ip, dicom_port
 

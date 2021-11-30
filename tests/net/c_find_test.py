@@ -13,9 +13,10 @@ from typing import Generator
 
 import pytest
 
-from pynetdicom import AE, debug_logger
+from pynetdicom import debug_logger
 from pytest import CaptureFixture
 
+from pacsanini.config import PacsaniniConfig
 from pacsanini.models import QueryLevel
 from pacsanini.net import c_find
 
@@ -34,22 +35,19 @@ def validate_results(sys_capture, results, query_level, query_fields):
 
 
 @pytest.mark.net
-def test_find_single_date(
-    capsys: CaptureFixture,
-    test_dicom_server: AE,
-    test_src_node: dict,
-    test_dest_node: dict,
-):
+def test_find_single_date(capsys: CaptureFixture, pacsanini_orthanc_config: str):
     """Test that the find method functions correctly.
     Check that the query level is correctly set to the patient
     level by looking at the output logs.
     """
+    config = PacsaniniConfig.from_yaml(pacsanini_orthanc_config)
+
     query_fields = ["SOPClassUID", "PatientBirthDate"]
     debug_logger()
 
     patient_level_results = c_find.patient_find(
-        test_src_node,
-        test_dest_node,
+        config.net.local_node.dict(),
+        config.net.called_node.dict(),
         dicom_fields=query_fields,
         start_date=datetime(2016, 6, 22),
     )
@@ -62,10 +60,10 @@ def test_find_single_date(
     )
 
     study_level_results = c_find.study_find(
-        test_src_node,
-        test_dest_node,
+        config.net.local_node,
+        config.net.called_node,
         dicom_fields=query_fields,
-        start_date=datetime(2016, 6, 22),
+        start_date=datetime(2010, 12, 1),
     )
     validate_results(
         capsys,
@@ -77,23 +75,21 @@ def test_find_single_date(
 
 @pytest.mark.net
 def test_find_multiple_dates(
-    capsys: CaptureFixture,
-    test_dicom_server: AE,
-    tmpdir: Path,
-    test_src_node: dict,
-    test_dest_node: dict,
+    capsys: CaptureFixture, pacsanini_orthanc_config: str, tmpdir: Path
 ):
     """Test that the find method functions correctly.
     Check that the query level is correctly set to the patient
     level by looking at the output logs.
     """
+    config = PacsaniniConfig.from_yaml(pacsanini_orthanc_config)
+
     query_fields = ["Modality", "PatientBirthDate"]
     debug_logger()
 
     patient_out_path = os.path.join(tmpdir, "patient_results.csv")
     c_find.patient_find2csv(
-        test_src_node,
-        test_dest_node,
+        config.net.local_node,
+        config.net.called_node,
         patient_out_path,
         dicom_fields=query_fields,
         start_date=datetime.now() - timedelta(days=23),
@@ -105,8 +101,8 @@ def test_find_multiple_dates(
 
     study_out_path = os.path.join(tmpdir, "study_results.csv")
     c_find.study_find2csv(
-        test_src_node,
-        test_dest_node,
+        config.net.local_node,
+        config.net.called_node,
         study_out_path,
         dicom_fields=query_fields,
         start_date=datetime.now() - timedelta(days=23),
@@ -118,15 +114,14 @@ def test_find_multiple_dates(
 
 
 @pytest.mark.net
-def test_find_invalid_parameters(
-    test_dicom_server: AE, test_src_node: dict, test_dest_node: dict
-):
+def test_find_invalid_parameters(pacsanini_orthanc_config: str):
     """Test that with invalid parameters, the find functionality
     responds with expected errors.
     """
+    config = PacsaniniConfig.from_yaml(pacsanini_orthanc_config)
     invalid_dates = c_find.find(
-        test_src_node,
-        test_dest_node,
+        config.net.local_node,
+        config.net.called_node,
         query_level=QueryLevel.PATIENT,
         dicom_fields=["PatientID"],
         start_date=datetime.now(),
@@ -135,9 +130,11 @@ def test_find_invalid_parameters(
     with pytest.raises(ValueError):
         list(invalid_dates)
 
+    called_node = config.net.called_node.dict()
+    called_node.pop("ip", None)
     invalid_dest_node = c_find.find(
-        test_src_node,
-        test_src_node,
+        config.net.local_node,
+        called_node,
         query_level=QueryLevel.PATIENT,
         dicom_fields=["PatientID"],
         start_date=datetime.now(),

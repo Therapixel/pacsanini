@@ -54,8 +54,8 @@ def config_option(function: Callable) -> Callable:
 
     def validate_path(ctx, param, value):
         if not value:
-            config_path = default_config_path()
-            if not config_path:
+            value = default_config_path()
+            if not value:
                 msg = (
                     "No configuration file provided and no default"
                     " configuration file in the following locations:\n"
@@ -64,7 +64,7 @@ def config_option(function: Callable) -> Callable:
                     f" (3) Using the {DEFAULT_CONFIG_NAME} file in your homedir."
                 )
                 raise BadParameter(msg, ctx=ctx, param=param)
-            return config_path
+
         if not os.path.exists(value):
             raise BadParameter(f"'{value}' does not exist")
 
