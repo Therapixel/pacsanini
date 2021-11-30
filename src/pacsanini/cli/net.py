@@ -168,7 +168,7 @@ def send_cli(dcmdir: str, config: PacsaniniConfig, debug: bool):
         debug_logger()
 
     results = send_dicom(
-        dcmdir, src_node=config.net.local_node, dest_node=config.net.dest_node
+        dcmdir, src_node=config.net.local_node, dest_node=config.net.called_node
     )
     for (path, status) in results:
         click.echo(f"{path},{'OK' if status.Status == 0 else 'FAILED'}")

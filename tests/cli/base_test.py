@@ -41,16 +41,16 @@ def test_config_option_with_explicit_non_existing_value(dummy_func):
 
 
 @pytest.mark.cli
-@patch.dict(os.environ, {PACSANINI_CONF_ENVVAR: "foobar"})
-def test_config_option_with_implicit_value(dummy_func):
+def test_config_option_with_implicit_value(dummy_func, pacsanini_orthanc_config):
     """Test that the configuration file option raises an
     error if the supplied file doesn't exist.
     """
-    runner = CliRunner()
-    with runner.isolated_filesystem():
-        with open("foobar", "w") as f:
-            f.write("")
+    with patch.dict(os.environ, {PACSANINI_CONF_ENVVAR: pacsanini_orthanc_config}):
+        runner = CliRunner()
+        with runner.isolated_filesystem():
+            with open("foobar", "w") as f:
+                f.write("")
 
-        res = runner.invoke(dummy_func)
-        assert res.output.strip() == "foobar"
-        assert res.exit_code == 0
+            res = runner.invoke(dummy_func, catch_exceptions=True)
+            assert "Config" in res.output
+            assert res.exit_code == 0
